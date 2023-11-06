@@ -1,4 +1,4 @@
-nclude "shell.h"
+#include "shell.h"
 
 /**
  * print_environment - Prints the current environment.
@@ -28,10 +28,10 @@ char *get_environment_variable(info_t *info, const char *variable_name)
 	{
 		value = starts_with(node->str, variable_name);
 		if (value && *value)
-			return value;
+			return (value);
 		node = node->next;
 	}
-	return NULL;
+	return (NULL);
 }
 
 /**
@@ -45,14 +45,13 @@ int set_environment_variable(info_t *info)
 {
 	if (info->argc != 3)
 	{
-		_eputs("Incorrect number of arguments\n");
-		return 1;
+		shell_eputs("Incorrect number of arguments\n");
+		return (1);
 	}
 
-	if (modify_or_create_environment_variable(info,
-				info->argv[1], info->argv[2]) == 0)
-		return 0;
-	return 1;
+	if (set_environment_variable(info, info->argv[1], info->argv[2]) == 0)
+		return (0);
+	return (1);
 }
 
 /**
@@ -67,13 +66,13 @@ int unset_environment_variable(info_t *info)
 
 	if (info->argc == 1)
 	{
-		_eputs("Too few arguments.\n");
-		return 1;
+		shell_eputs("Too few arguments.\n");
+		return (1);
 	}
 	for (i = 1; i <= info->argc; i++)
-		remove_environment_variable(info, info->argv[i]);
+		unset_environment_variable(info, info->argv[i]);
 
-	return 0;
+	return (0);
 }
 
 /**
@@ -90,5 +89,5 @@ int populate_environment_list(info_t *info)
 	for (i = 0; environ[i]; i++)
 		add_node_end(&node, environ[i], 0);
 	info->env = node;
-	return 0;
+	return (0);
 }

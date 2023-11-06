@@ -1,57 +1,58 @@
 #include "shell.h"
 
-/** list_length - Determines the length of the linked list
+/**
+ * list_length - Determines the length of the linked list
  * @first_node: Pointer to the first node
  *
  * Return: Size of the list
  */
 size_t list_length(const list_t *first_node)
 {
-    size_t count = 0;
+	size_t count = 0;
 
-    while (first_node)
-    {
-        first_node = first_node->next;
-        count++;
-    }
-    return count;
+	while (first_node)
+	{
+		first_node = first_node->next;
+		count++;
+	}
+	return (count);
 }
 
 /**
  * list_to_array - Converts the list->str into an array of strings
- * @list_head: Pointer to the first node
+ * @node: Pointer to the first node
  *
  * Return: Array of strings
  */
-char **list_to_array(list_t *list_head)
+char **list_to_array(list_t *node)
 {
-    list_t *current_node = list_head;
-    size_t array_size = list_length(list_head);
-    size_t i;
-    char **strings;
-    char *string;
+	list_t *current_node = node;
+	size_t array_size = list_length(node);
+	size_t index;
+	char **strings;
+	char *string;
 
-    if (!list_head || !array_size)
-        return NULL;
-    strings = malloc(sizeof(char *) * (array_size + 1));
-    if (!strings)
-        return NULL;
-    for (i = 0; current_node; current_node = current_node->next, i++)
-    {
-        string = malloc(_strlen(current_node->str) + 1);
-        if (!string)
-        {
-            for (size_t j = 0; j < i; j++)
-                free(strings[j]);
-            free(strings);
-            return NULL;
-        }
+	if (!node || !array_size)
+		return (NULL);
+	strings = malloc(sizeof(char *) * (array_size + 1));
+	if (!strings)
+		return (NULL);
+	for (index = 0; current_node; current_node = current_node->next, index++)
+	{
+		string = malloc(_strlen(current_node->str) + 1);
+		if (!string)
+		{
+			for (size_t j = 0; j < index; j++)
+				free(strings[j]);
+			free(strings);
+			return (NULL);
+		}
 
-        string = _strcpy(string, current_node->str);
-        strings[i] = string;
-    }
-    strings[i] = NULL;
-    return strings;
+		string = _strcpy(string, current_node->str);
+		strings[index] = string;
+	}
+	strings[index] = NULL;
+	return (strings);
 }
 
 /**
@@ -62,41 +63,41 @@ char **list_to_array(list_t *list_head)
  */
 size_t print_linked_list(const list_t *first_node)
 {
-    size_t size = 0;
+	size_t size = 0;
 
-    while (first_node)
-    {
-        _puts(convert_number(first_node->num, 10, 0));
-        _putchar(':');
-        _putchar(' ');
-        _puts(first_node->str ? first_node->str : "(nil)");
-        _puts("\n");
-        first_node = first_node->next;
-        size++;
-    }
-    return size;
+	while (first_node)
+	{
+		shell_puts(convert_number(first_node->num, 10, 0));
+		_putchar(':');
+		_putchar(' ');
+		shell_puts(first_node->str ? first_node->str : "(nil)");
+		shell_puts("\n");
+		first_node = first_node->next;
+		size++;
+	}
+	return (size);
 }
 
 /**
  * find_pnode - Returns the node whose string starts with a prefix
- * @list_head: Pointer to the list head
+ * @node: Pointer to the list head
  * @prefix: String to match
  * @next_char: The next character after the prefix to match
  *
  * Return: The matching node or NULL
  */
-list_t *find_pnode(list_t *list_head, char *prefix, char next_char)
+list_t *find_pnode(list_t *node, char *prefix, char next_char)
 {
-    char *match = NULL;
+	char *m = NULL;
 
-    while (list_head)
-    {
-        match = starts_with(list_head->str, prefix);
-        if (match && ((next_char == -1) || (*match == next_char)))
-            return list_head;
-        list_head = list_head->next;
-    }
-    return NULL;
+	while (node)
+	{
+		m = starts_with(node->str, prefix);
+		if (m && ((next_char == -1) || (*m == next_char)))
+			return (node);
+		node = node->next;
+	}
+	return (NULL);
 }
 
 /**
@@ -108,14 +109,14 @@ list_t *find_pnode(list_t *list_head, char *prefix, char next_char)
  */
 ssize_t get_inode(list_t *head_node, list_t *target_node)
 {
-    size_t index = 0;
+	size_t i = 0;
 
-    while (head_node)
-    {
-        if (head_node == target_node)
-            return index;
-        head_node = head_node->next;
-        index++;
-    }
-    return -1;
+	while (head_node)
+	{
+		if (head_node == target_node)
+			return (i);
+		head_node = head_node->next;
+		i++;
+	}
+	return (-1);
 }

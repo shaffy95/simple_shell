@@ -1,49 +1,50 @@
 #include "shell.h"
 
-/**remove_comments - function replaces first instance of '#' with '\0'
+/**
+ * remove_comments - function replaces first instance of '#' with '\0'
  * @buf: address of the string to modify
  *
  * Return: Always 0;
  */
 void remove_comments(char *buf)
 {
-	int m;
+	int my;
 
-	for (m = 0; buf[m] != '\0'; m++)
-		if (buf[m] == '#' && (!m || buf[m - 1] == ' '))
+	for (my = 0; buf[my] != '\0'; my++)
+		if (buf[my] == '#' && (!my || buf[my - 1] == ' '))
 		{
-			buf[m] = '\0';
+			buf[my] = '\0';
 			break;
 		}
 }
 
 /**
  * erratoi - Converts a string to an integer.
- * @str_to_convert: The string to be converted.
+ * @strToConvert: The string to be converted.
  * Return: The converted number or -1 on error.
  */
 int erratoi(char *strToConvert)
 {
-    int m = 0;
-    unsigned long int result = 0;
+	int my = 0;
+	unsigned long int result = 0;
 
-    if (*strToConvert == '+')
-        strToConvert++;  /* TODO: why does this make main return 255? */
+	if (*strToConvert == '+')
+		strToConvert++;  /* TODO: why does this make main return 255? */
 
-    for (m = 0; strToConvert[m] != '\0'; m++)
-    {
-        if (strToConvert[m] >= '0' && strToConvert[m] <= '9')
-        {
-            result *= 10;
-            result += (strToConvert[m] - '0');
-            if (result > INT_MAX)
-                return (-1);
-        }
-        else
-            return (-1);
-    }
+	for (my = 0; strToConvert[my] != '\0'; my++)
+	{
+		if (strToConvert[my] >= '0' && strToConvert[my] <= '9')
+		{
+			result *= 10;
+			result += (strToConvert[my] - '0');
+			if (result > INT_MAX)
+				return (-1);
+		}
+		else
+			return (-1);
+	}
 
-    return (result);
+	return (result);
 }
 
 /**
@@ -55,31 +56,31 @@ int erratoi(char *strToConvert)
  */
 char *convert_number(long int num, int base, int flags)
 {
-    static char *array;
-    static char buffer[50];
-    char sign = 0;
-    char *ptr;
-    unsigned long n = num;
+	static char *array;
+	static char buffer[50];
+	char sign = 0;
+	char *ptr;
+	unsigned long nay = num;
 
-    if (!(flags & CONVERT_UNSIGNED) && num < 0)
-    {
-        n = -num;
-        sign = '-';
-    }
+	if (!(flags & CONVERT_UNSIGNED) && num < 0)
+	{
+		nay = -num;
+		sign = '-';
+	}
 
-    array = flags & CONVERT_LOWERCASE ? "0123456789abcdef" : "0123456789ABCDEF";
-    ptr = &buffer[49];
-    *ptr = '\0';
+	array = flags & CONVERT_LOWERCASE ? "0123456789abcdef" : "0123456789ABCDEF";
+	ptr = &buffer[49];
+	*ptr = '\0';
 
-    do {
-        *--ptr = array[n % base];
-        n /= base;
-    } while (n != 0);
+	do {
+		*--ptr = array[nay % base];
+		nay /= base;
+	} while (nay != 0);
 
-    if (sign)
-        *--ptr = sign;
+	if (sign)
+		*--ptr = sign;
 
-    return (ptr);
+	return (ptr);
 }
 
 /**
@@ -90,37 +91,37 @@ char *convert_number(long int num, int base, int flags)
  */
 int print_d(int integer_to_print, int fd)
 {
-    int (*__putchar)(char) = _putchar;
-    int m, count = 0;
-    unsigned int _abs_, current;
+	int (*__putchar)(char) = _putchar;
+	int my, count = 0;
+	unsigned int _abs_, current;
 
-    if (fd == STDERR_FILENO)
-        __putchar = _eputchar;
+	if (fd == STDERR_FILENO)
+		__putchar = shell_eputchar;
 
-    if (integer_to_print < 0)
-    {
-        _abs_ = -integer_to_print;
-        __putchar('-');
-        count++;
-    }
-    else
-        _abs_ = integer_to_print;
+	if (integer_to_print < 0)
+	{
+		_abs_ = -integer_to_print;
+		__putchar('-');
+		count++;
+	}
+	else
+		_abs_ = integer_to_print;
 
-    current = _abs_;
-    for (m = 1000000000; m > 1; m /= 10)
-    {
-        if (_abs_ / m)
-        {
-            __putchar('0' + current / m);
-            count++;
-        }
-        current %= m;
-    }
+	current = _abs_;
+	for (my = 1000000000; my > 1; my /= 10)
+	{
+		if (_abs_ / my)
+		{
+			__putchar('0' + current / my);
+			count++;
+		}
+		current %= my;
+	}
 
-    __putchar('0' + current);
-    count++;
+	__putchar('0' + current);
+	count++;
 
-    return (count);
+	return (count);
 }
 
 /**
@@ -130,11 +131,11 @@ int print_d(int integer_to_print, int fd)
  */
 void print_error(info_t *info, char *error_string)
 {
-    _eputs(info->fname);
-    _eputs(": ");
-    print_d(info->line_count, STDERR_FILENO);
-    _eputs(": ");
-    _eputs(info->argv[0]);
-    _eputs(": ");
-    _eputs(error_string);
+	shell_eputs(info->fname);
+	shell_eputs(": ");
+	print_d(info->line_count, STDERR_FILENO);
+	shell_eputs(": ");
+	shell_eputs(info->argv[0]);
+	shell_eputs(": ");
+	shell_eputs(error_string);
 }

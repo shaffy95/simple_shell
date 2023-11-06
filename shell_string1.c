@@ -1,64 +1,85 @@
 #include "shell.h"
 
 /**
+ * allocate_array - Allocates memory for the word_array
+ * @count: The number of words
+ * @array: A pointer to the word_array
+ * @string: The input string
+ * @dex: The current character index
+ * @delim: The delimiters used for splitting
+ * Return: 1 on success, 0 on failure
+ */
+int allocate_array(int count, char **array, char *string, int dex, char *delim)
+{
+	int word_index = 0, char_copy = 0;
+
+	while (word_index < count)
+	{
+		while (is_delimiter(string[dex], delim))
+			dex++;
+
+		char_copy = 0;
+
+		while (!is_delimiter(string[dex + char_copy], delim) &&
+				string[dex + char_copy])
+			char_copy++;
+
+		array[word_index] = malloc((char_copy + 1) * sizeof(char));
+
+		if (!array[word_index])
+		{
+			while (word_index > 0)
+				free(array[--word_index]);
+			free(array);
+			return (0);
+		}
+
+		for (int index = 0; index < char_copy; index++)
+			array[word_index][index] = string[dex++];
+		array[word_index][char_copy] = 0;
+		word_index++;
+	}
+	array[word_index] = NULL;
+	return (1);
+}
+
+/**
  * split_string - splits a string into words using specified delimiters
  * @input_string: the input string to be split
- * @delimiters: the delimiters used for splitting
+ * @delim: the delimiters used for splitting
  * Return: a pointer to an array of strings, or NULL on failure
  */
-char **split_string(char *input_string, char *delimiters)
+char **split_string(char *input_string, char *delim)
 {
-	int char_index, word_index, char_count, char_copy;
+	int index = 0, count = 0;
 	char **word_array;
 
 	if (input_string == NULL || input_string[0] == 0)
 		return (NULL);
 
-	if (!delimiters)
-		delimiters = " ";  /* Default delimiter is space */
+	if (!delim)
+		delim = " ";
 
-	for (char_index = 0; input_string[char_index] != '\0'; char_index++)
+	while (input_string[index] != '\0')
 	{
-		if (!is_delimiter(input_string[char_index], delimiters) &&
-		    (is_delimiter(input_string[char_index + 1], delimiters)
-		     || !input_string[char_index + 1]))
+		if (!is_delimiter(input_string[index], delim) &&
+				(is_delimiter(input_string[index + 1], delim)
+				 || !input_string[_index + 1]))
 		{
-			char_count++;
+			count++;
 		}
+		index++;
 	}
 
-	if (char_count == 0)
+	if (count == 0)
 		return (NULL);
 
-	word_array = malloc((1 + char_count) * sizeof(char *));
-	if (!word_array)
-		return (NULL);
-
-	for (char_index = 0, word_index = 0; word_index < char_count; word_index++)
-	{
-		while (is_delimiter(input_string[char_index], delimiters))
-			char_index++;
-
-		char_copy = 0;
-
-		while (!is_delimiter(input_string[char_index + char_copy],
-		delimiters) && input_string[char_index + char_copy])
-			char_copy++;
-
-		word_array[word_index] = malloc((char_copy + 1) * sizeof(char));
-
-		if (!word_array[word_index])
-		{
-			for (char_copy = 0; char_copy < word_index; char_copy++)
-				free(word_array[char_copy]);
-			free(word_array);
+	word_array = malloc((1 + count) * sizeof(char *);
+			if (!word_array)
 			return (NULL);
-	}
 
-		for (char_copy = 0; char_copy < char_copy; char_copy++)
-			word_array[word_index][char_copy] = input_string[char_index++];
-		word_array[word_index][char_copy] = 0;
-	}
-	word_array[word_index] = NULL;
-	return word_array;
+			if (!allocate_array(count, word_array, input_string, 0, delim))
+			return (NULL);
+
+			return (word_array);
 }

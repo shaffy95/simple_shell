@@ -1,7 +1,8 @@
 #include "shell.h"
 
 /**
- * chain_delimiter - checks if the current character in the buffer is a chain delimiter
+ * chain_delimiter - checks if the current character in the
+ * buffer is a chain delimiter
  * @info: the parameter struct
  * @buf: the character buffer
  * @position: address of the current position in buf
@@ -40,22 +41,22 @@ int chain_delimiter(info_t *info, char *buf, size_t *position)
  * check_chain - checks whether to continue chaining based on the last status
  * @info: the parameter struct
  * @buf: the character buffer
- * @position: address of the current position in buf
- * @start: starting position in buf
- * @length: length of buf
+ * @pst: address of the current position in buf
+ * @stat: starting position in buf
+ * @len: length of buf
  *
  * Return: Void
  */
-void check_chain(info_t *info, char *buf, size_t *post, size_t stat, size_t leng)
+void check_chain(info_t *info, char *buf, size_t *pst, size_t stat, size_t len)
 {
-	size_t current = *post;
+	size_t current = *pst;
 
 	if (info->command_buffer_type == CMD_AND)
 	{
 		if (info->status)
 		{
 			buf[stat] = 0;
-			current = leng;
+			current = len;
 		}
 	}
 	if (info->command_buffer_type == CMD_OR)
@@ -63,11 +64,11 @@ void check_chain(info_t *info, char *buf, size_t *post, size_t stat, size_t leng
 		if (!info->status)
 		{
 			buf[stat] = 0;
-			current = length;
+			current = len;
 		}
 	}
 
-	*post = current;
+	*pst = current;
 }
 
 /**
@@ -78,11 +79,11 @@ void check_chain(info_t *info, char *buf, size_t *post, size_t stat, size_t leng
  */
 int replace_alias(info_t *info)
 {
-	int i;
+	int index;
 	list_t *node;
 	char *position;
 
-	for (i = 0; i < 10; i++)
+	for (index = 0; index < 10; index++)
 	{
 		node = node_starts_with(info->alias, info->arguments[0], '=');
 		if (!node)
@@ -107,34 +108,34 @@ int replace_alias(info_t *info)
  */
 int replace_variables(info_t *info)
 {
-	int i = 0;
+	int index = 0;
 	list_t *node;
 
-	for (i = 0; info->arguments[i]; i++)
+	for (index = 0; info->arguments[index]; index++)
 	{
-		if (info->arguments[i][0] != '$' || !info->arguments[i][1])
+		if (info->arguments[index][0] != '$' || !info->arguments[index][1])
 			continue;
 
-		if (!_strcmp(info->arguments[i], "$?"))
+		if (!_strcmp(info->arguments[index], "$?"))
 		{
-			replace_string(&(info->arguments[i]),
-				_strdup(convert_number(info->status, 10, 0)));
+			replace_string(&(info->arguments[index]),
+					_strdup(convert_number(info->status, 10, 0)));
 			continue;
 		}
-		if (!_strcmp(info->arguments[i], "$$"))
+		if (!_strcmp(info->arguments[index], "$$"))
 		{
 			replace_string(&(info->arguments[i]),
-				_strdup(convert_number(getpid(), 10, 0)));
+					_strdup(convert_number(getpid(), 10, 0)));
 			continue;
 		}
-		node = node_starts_with(info->environment, &info->arguments[i][1], '=');
+		node = node_starts_with(info->environment, &info->arguments[index][1], '=');
 		if (node)
 		{
-			replace_string(&(info->arguments[i]),
-				_strdup(_strchr(node->str, '=') + 1));
+			replace_string(&(info->arguments[index]),
+					_strdup(_strchr(node->str, '=') + 1));
 			continue;
 		}
-		replace_string(&info->arguments[i], _strdup(""));
+		replace_string(&info->arguments[index], _strdup(""));
 	}
 	return (0);
 }

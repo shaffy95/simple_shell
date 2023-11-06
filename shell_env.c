@@ -13,7 +13,7 @@ char **get_environment(info_t *information)
 			information->environment_changed)
 	{
 		information->environment =
-		list_to_strings(information->environment_list);
+			list_to_strings(information->environment_list);
 		information->environment_changed = 0;
 	}
 
@@ -42,8 +42,8 @@ int unset_environment_variable(info_t *information, char *variable)
 		if (ptr && *ptr == '=')
 		{
 			information->environment_changed =
-			delete_node_at_index
-			(&(information->environment_list), index);
+				delete_node_at_index
+				(&(information->environment_list), index);
 			index = 0;
 			node = information->environment_list;
 			continue;

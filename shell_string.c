@@ -19,7 +19,7 @@ char *copy_string(char *destination, char *source)
 		index++;
 	}
 	destination[index] = '\0';
-	return destination;
+	return (destination);
 }
 
 /**
@@ -34,15 +34,15 @@ char *duplicate_string(const char *str)
 	char *duplicate;
 
 	if (str == NULL)
-		return NULL;
+		return (NULL);
 	while (*str++)
 		length++;
 	duplicate = malloc(sizeof(char) * (length + 1));
 	if (!duplicate)
-		return NULL;
+		return (NULL);
 	for (length++; length--;)
 		duplicate[length] = *--str;
-	return duplicate;
+	return (duplicate);
 }
 
 /**
@@ -83,5 +83,5 @@ int print_character(char c)
 	}
 	if (c != BUFFER_FLUSH)
 		buffer[index++] = c;
-	return 1;
+	return (1);
 }

@@ -65,12 +65,10 @@ char *concatenateLimitedStrings(char *first, char *second, int limit)
  */
 char *findCharacterInString(char *stringToSearch, char characterToFind)
 {
-	do
-	{
+	do {
 		if (*stringToSearch == characterToFind)
 			return (stringToSearch);
-	}
-	while (*stringToSearch++ != '\0');
+	} while (*stringToSearch++ != '\0');
 
 	return (NULL);
 }

@@ -11,24 +11,24 @@
  */
 int exitShell(info_t *shellInfo)
 {
-    int exitStatus;
+	int exitStatus;
 
-    if (shellInfo->argv[1])
-    {
-        exitStatus = _erratoi(shellInfo->argv[1]);
-        if (exitStatus == -1)
-        {
-            shellInfo->status = 2;
-            printError(shellInfo, "Illegal number: ");
-            _eputs(shellInfo->argv[1]);
-            _eputchar('\n');
-            return 1;
-        }
-        shellInfo->err_num = _erratoi(shellInfo->argv[1]);
-        return -2;
-    }
-    shellInfo->err_num = -1;
-    return -2;
+	if (shellInfo->argv[1])
+	{
+		exitStatus = erratoi(shellInfo->argv[1]);
+		if (exitStatus == -1)
+		{
+			shellInfo->status = 2;
+			printError(shellInfo, "Illegal number: ");
+			shell_eputs(shellInfo->argv[1]);
+			shell_eputchar('\n');
+			return (1);
+		}
+		shellInfo->err_num = erratoi(shellInfo->argv[1]);
+		return (-2);
+	}
+	shellInfo->err_num = -1;
+	return (-2);
 }
 
 /**
@@ -41,46 +41,46 @@ int exitShell(info_t *shellInfo)
  */
 int changeCurrentDirectory(info_t *shellInfo)
 {
-    char *currentDir, *newDir, buffer[1024];
-    int chdirRet;
+	char *currentDir, *newDir, buffer[1024];
+	int chdirRet;
 
-    currentDir = getcwd(buffer, 1024);
-    if (!currentDir)
-        _puts("TODO: Handle getcwd failure message here\n");
-    if (!shellInfo->argv[1])
-    {
-        newDir = _getenv(shellInfo, "HOME=");
-        if (!newDir)
-            chdirRet = chdir((newDir = _getenv(shellInfo, "PWD=")) ? newDir : "/");
-        else
-            chdirRet = chdir(newDir);
-    }
-    else if (_strcmp(shellInfo->argv[1], "-") == 0)
-    {
-        if (!_getenv(shellInfo, "OLDPWD="))
-        {
-            _puts(currentDir);
-            _putchar('\n');
-            return 1;
-        }
-        _puts(_getenv(shellInfo, "OLDPWD="));
-        _putchar('\n');
-        chdirRet = chdir((newDir = _getenv(shellInfo, "OLDPWD=")) ? newDir : "/");
-    }
-    else
-        chdirRet = chdir(shellInfo->argv[1]);
-    if (chdirRet == -1)
-    {
-        printError(shellInfo, "can't cd to ");
-        _eputs(shellInfo->argv[1]);
-        _eputchar('\n');
-    }
-    else
-    {
-        _setenv(shellInfo, "OLDPWD", _getenv(shellInfo, "PWD="));
-        _setenv(shellInfo, "PWD", getcwd(buffer, 1024));
-    }
-    return 0;
+	currentDir = getcwd(buffer, 1024);
+	if (!currentDir)
+		shell_puts("TODO: Handle getcwd failure message here\n");
+	if (!shellInfo->argv[1])
+	{
+		newDir = getenv(shellInfo, "HOME=");
+		if (!newDir)
+			chdirRet = chdir((newDir = getenv(shellInfo, "PWD=")) ? newDir : "/");
+		else
+			chdirRet = chdir(newDir);
+	}
+	else if (_strcmp(shellInfo->argv[1], "-") == 0)
+	{
+		if (!getenv(shellInfo, "OLDPWD="))
+		{
+			shell_puts(currentDir);
+			_putchar('\n');
+			return (1);
+		}
+		shell_puts(getenv(shellInfo, "OLDPWD="));
+		_putchar('\n');
+		chdirRet = chdir((newDir = getenv(shellInfo, "OLDPWD=")) ? newDir : "/");
+	}
+	else
+		chdirRet = chdir(shellInfo->argv[1]);
+	if (chdirRet == -1)
+	{
+		printError(shellInfo, "can't cd to ");
+		shell_eputs(shellInfo->argv[1]);
+		shell_eputchar('\n');
+	}
+	else
+	{
+		setenv(shellInfo, "OLDPWD", getenv(shellInfo, "PWD="));
+		setenv(shellInfo, "PWD", getcwd(buffer, 1024));
+	}
+	return (0);
 }
 
 /**
@@ -93,11 +93,11 @@ int changeCurrentDirectory(info_t *shellInfo)
  */
 int showHelp(info_t *shellInfo)
 {
-    char **argArray;
+	char **argArray;
 
-    argArray = shellInfo->argv;
-    _puts("Help: Function not yet implemented\n");
-    if (0)
-        _puts(*argArray); /* Temporary unused variable workaround */
-    return 0;
+	argArray = shellInfo->argv;
+	shell_puts("Help: Function not yet implemented\n");
+	if (0)
+		shell_puts(*argArray); /* Temporary unused variable workaround */
+	return (0);
 }

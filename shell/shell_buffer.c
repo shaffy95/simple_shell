@@ -43,7 +43,7 @@ ssize_t input_buffer(info_t *info, char **buffer, size_t *length)
 			}
 		}
 	}
-	return bytes_read;
+	return (bytes_read);
 }
 
 /**
@@ -62,7 +62,7 @@ ssize_t get_input(info_t *info)
 	_putchar(BUF_FLUSH);
 	bytes_read = input_buffer(info, &chain_buffer, &buffer_length);
 	if (bytes_read == -1) /* EOF */
-		return -1;
+		return (-1);
 	if (buffer_length)	/* We have commands left in the chain buffer */
 	{
 		chain_iterator = current_position;
@@ -71,7 +71,7 @@ ssize_t get_input(info_t *info)
 		/* Get a pointer for return */
 
 		check_chain(info, chain_buffer,
-				&chain_iterator, current_position, buffer_length);
+			&chain_iterator, current_position, buffer_length);
 		while (chain_iterator < buffer_length)
 			/* Iterate to semicolon or end */
 		{
@@ -92,13 +92,12 @@ ssize_t get_input(info_t *info)
 
 		*buffer_ptr = position;
 		/* Pass back a pointer to the current command position */
-		return _strlen(position);
+		return (_strlen(position));
 		/* Return the length of the current command */
 	}
-
 	*buffer_ptr = chain_buffer;
 	/* Not a chain, pass back the buffer from _getline() */
-	return bytes_read;
+	return (bytes_read);
 	/* Return the length of the buffer from _getline() */
 }
 
@@ -115,7 +114,7 @@ ssize_t read_buffer(info_t *info, char *buf, size_t *length)
 	ssize_t bytes_read = 0;
 
 	if (*length)
-		return 0;
+		return (0);
 	bytes_read = read(info->readfd, buf, READ_BUF_SIZE);
 	if (bytes_read >= 0)
 		*length = bytes_read;
@@ -152,7 +151,7 @@ int _getline(info_t *info, char **ptr, size_t *buffer_length)
 	k = c ? 1 + (unsigned int)(c - buf) : buffer_len;
 	new_position = _realloc(position, size, size ? size + k : k + 1);
 	if (!new_position) /* MALLOC FAILURE! */
-		return (position) ? free(position), -1 : -1;
+		return (position ? free(position), -1 : -1);
 
 	if (size)
 		_strncat(new_position, buf + buffer_iterator, k - buffer_iterator);
@@ -177,7 +176,7 @@ int _getline(info_t *info, char **ptr, size_t *buffer_length)
  */
 void sigintHandler(__attribute__((unused))int sig_num)
 {
-	_puts("\n");
-	_puts("$ ");
+	shell_puts("\n");
+	shell_puts("$ ");
 	_putchar(BUF_FLUSH);
 }

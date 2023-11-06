@@ -198,16 +198,16 @@ void configure_info(info_t *, char **);
 void release_info(info_t *, int);
 
 /* toem_cmd.c */
-char *get_environment_variable(info_t *, const char *);
+char *getenv(info_t *, const char *);
 int print_environment(info_t *);
-int set_environment_variable(info_t *);
-int unset_environment_variable(info_t *);
+int setenv(info_t *);
+int unsetenv(info_t *);
 int populate_environment_list(info_t *);
 
 /* toem_env.c */
 char **get_environ(info_t *);
-int unset_environment_variable(info_t *, char *);
-int set_environment_variable(info_t *, char *, char *);
+int unsetenv(info_t *, char *);
+int setenv(info_t *, char *, char *);
 
 /* toem_hist.c */
 char *get_history_file(info_t *info);
