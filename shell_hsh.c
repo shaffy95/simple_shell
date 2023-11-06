@@ -60,8 +60,8 @@ int find_builtin(info_t *info)
 		{"env", print_environment},
 		{"help", showHelp},
 		{"history", display_history},
-		{"setenv", set_environment_variable},
-		{"unsetenv", unset_environment_variable},
+		{"setenv", setenv},
+		{"unsetenv", unsetenv},
 		{"cd", changeCurrentDirectory},
 		{"alias", alias_command},
 		{NULL, NULL}
@@ -100,7 +100,7 @@ void find_command(info_t *info)
 	if (!g)
 		return;
 
-	path = find_path(info, get_environment_variable(info, "PATH="),
+	path = find_path(info, getenv(info, "PATH="),
 			info->argv[0]);
 	if (path)
 	{
@@ -109,8 +109,8 @@ void find_command(info_t *info)
 	}
 	else
 	{
-		if ((interactive(info) || get_environment_variable(info, "PATH=")
-					|| info->argv[0][0] == '/') && is_command(info, info->argv[0]))
+		if ((interactive(info) || getenv(info, "PATH=")
+					|| info->argv[0][0] == '/') && is_command(info, info->argv[0])
 			fork_command(info);
 		else if (*(info->arg) != '\n')
 		{
@@ -139,7 +139,7 @@ void fork_command(info_t *info)
 	}
 	if (child_pid == 0)
 	{
-		if (execve(info->path, info->argv, get_environment_variable(info)) == -1)
+		if (execve(info->path, info->argv, getenv(info)) == -1)
 		{
 			free_info(info, 1);
 			if (errno == EACCES)

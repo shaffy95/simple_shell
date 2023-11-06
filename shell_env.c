@@ -21,13 +21,13 @@ char **get_environment(info_t *information)
 }
 
 /**
- * unset_environment_variable - Remove an environment variable.
+ * unsetenv - Remove an environment variable.
  * @information: A structure containing potential arguments.
  * Used to maintain a constant function prototype.
  * Return: 1 on successful deletion, 0 otherwise
  * @variable: The property of the environment variable to remove
  */
-int unset_environment_variable(info_t *information, char *variable)
+int unsetenv(info_t *information, char *variable)
 {
 	list_t *node = information->environment_list;
 	size_t index = 0;
@@ -55,7 +55,7 @@ int unset_environment_variable(info_t *information, char *variable)
 }
 
 /**
- * set_environment_variable - Initialize a new environment
+ * setenv - Initialize a new environment
  * variable or modify an existing one.
  * @information: A structure containing potential arguments.
  * Used to maintain a constant function prototype.
@@ -63,7 +63,7 @@ int unset_environment_variable(info_t *information, char *variable)
  * @value: The value of the environment variable
  * Return: Always 0
  */
-int set_environment_variable(info_t *information, char *variable, char *value)
+int setenv(info_t *information, char *variable, char *value)
 {
 	char *buffer = NULL;
 	list_t *node;

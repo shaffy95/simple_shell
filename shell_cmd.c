@@ -13,13 +13,13 @@ int print_environment(info_t *info)
 }
 
 /**
- * get_environment_variable - Gets the value of an environment variable.
+ * getenv - Gets the value of an environment variable.
  * @info: Structure containing potential arguments. Used to maintain
  * @variable_name: Name of the environment variable to retrieve.
  *
  * Return: The value of the environment variable or NULL if not found.
  */
-char *get_environment_variable(info_t *info, const char *variable_name)
+char *getenv(info_t *info, const char *variable_name)
 {
 	list_t *node = info->env;
 	char *value;
@@ -35,13 +35,13 @@ char *get_environment_variable(info_t *info, const char *variable_name)
 }
 
 /**
- * set_environment_variable - Initializes a new
+ * setenv - Initializes a new
  * environment variable or modifies an existing one.
  * @info: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
  * Return: 0 on success, 1 on failure
  */
-int set_environment_variable(info_t *info)
+int setenv(info_t *info)
 {
 	if (info->argc != 3)
 	{
@@ -49,18 +49,18 @@ int set_environment_variable(info_t *info)
 		return (1);
 	}
 
-	if (set_environment_variable(info, info->argv[1], info->argv[2]) == 0)
+	if (setenv(info, info->argv[1], info->argv[2]) == 0)
 		return (0);
 	return (1);
 }
 
 /**
- * unset_environment_variable - Removes an environment variable.
+ * unsetenv - Removes an environment variable.
  * @info: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
  * Return: Always 0
  */
-int unset_environment_variable(info_t *info)
+int unsetenv(info_t *info)
 {
 	int i;
 
@@ -70,7 +70,7 @@ int unset_environment_variable(info_t *info)
 		return (1);
 	}
 	for (i = 1; i <= info->argc; i++)
-		unset_environment_variable(info, info->argv[i]);
+		unsetenv(info, info->argv[i]);
 
 	return (0);
 }

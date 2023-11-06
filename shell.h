@@ -189,7 +189,7 @@ ssize_t input_buffer(info_t *, char **, size_t *);
 /*toem_buffer.c */
 ssize_t read_buffer(info_t *, char *, size_t *);
 ssize_t get_input(info_t *);
-int _getline(info_t *, char **, size_t *);
+int shell_getline(info_t *, char **, size_t *);
 void sigintHandler(_attribute_((unused))int sig_num);
 
 /* toem_input.c */

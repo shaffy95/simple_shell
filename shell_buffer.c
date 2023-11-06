@@ -54,51 +54,42 @@ ssize_t input_buffer(info_t *info, char **buffer, size_t *length)
  */
 ssize_t get_input(info_t *info)
 {
-	static char *chain_buffer; /* The ';' command chain buffer */
+	static char *chain_buffer;
 	static size_t chain_iterator, current_position, buffer_length;
 	ssize_t bytes_read = 0;
 	char **buffer_ptr = &(info->arg), *position;
 
 	_putchar(BUF_FLUSH);
-	bytes_read = input_buffer(info, &chain_buffer, &buffer_length);
-	if (bytes_read == -1) /* EOF */
+	bytes_read = input_buf(info, &chain_buffer, &buffer_length);
+	if (bytes_read == -1)
 		return (-1);
-	if (buffer_length)	/* We have commands left in the chain buffer */
+	if (buffer_length)
 	{
-		chain_iterator = current_position;
-		/* Init new iterator to the current buffer position */
-		position = chain_buffer + current_position;
-		/* Get a pointer for return */
+		current_position = chain_iterator;
+		position = chain_buffer + chain_iterator;
 
-		check_chain(info, chain_buffer,
-			&chain_iterator, current_position, buffer_length);
-		while (chain_iterator < buffer_length)
-			/* Iterate to semicolon or end */
+		check_chain(info, chain_buffer, &current_position, chain_iterator,
+				buffer_length);
+		while (current_position < buffer_length)
 		{
-			if (is_chain(info, chain_buffer, &chain_iterator))
+			if (is_chain(info, chain_buffer, &current_position))
 				break;
-			chain_iterator++;
+			current_position++;
 		}
 
-		current_position = chain_iterator + 1;
-		/* Increment past nulled ';'' */
-		if (current_position >= buffer_length)
-			/* Reached the end of the buffer? */
+		chain_iterator = current_position + 1;
+		if (chain_iterator >= buffer_length)
 		{
-			current_position = buffer_length = 0;
-			/* Reset position and length */
+			chain_iterator = buffer_length = 0;
 			info->cmd_buf_type = CMD_NORM;
 		}
 
 		*buffer_ptr = position;
-		/* Pass back a pointer to the current command position */
 		return (_strlen(position));
-		/* Return the length of the current command */
 	}
+
 	*buffer_ptr = chain_buffer;
-	/* Not a chain, pass back the buffer from _getline() */
 	return (bytes_read);
-	/* Return the length of the buffer from _getline() */
 }
 
 /**
@@ -122,14 +113,14 @@ ssize_t read_buffer(info_t *info, char *buf, size_t *length)
 }
 
 /**
- * _getline - Gets the next line of input from STDIN.
+ * shell_getline - Gets the next line of input from STDIN.
  * @info: Parameter struct.
  * @ptr: Address of a pointer to a buffer, preallocated or NULL.
  * @buffer_length: Size of preallocated ptr buffer if not NULL.
  *
  * Return: Size.
  */
-int _getline(info_t *info, char **ptr, size_t *buffer_length)
+int shell_getline(info_t *info, char **ptr, size_t *buffer_length)
 {
 	static char buf[READ_BUF_SIZE];
 	static size_t buffer_iterator, buffer_len;
