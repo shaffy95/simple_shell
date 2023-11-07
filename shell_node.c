@@ -87,8 +87,8 @@ size_t print_dlist(const list_t *first_node)
 
 	while (first_node)
 	{
-		shell_puts(first_node->data ? first_node->data : "(nil)");
-		shell_puts("\n");
+		_puts(first_node->data ? first_node->data : "(nil)");
+		_puts("\n");
 		first_node = first_node->next;
 		size++;
 	}

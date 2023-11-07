@@ -23,13 +23,13 @@ void configure_info(info_t *information, char **arg_vector)
 	information->command_name = arg_vector[0];
 	if (information->arguments)
 	{
-		information->argument_vector = string_split(information->arguments, " \t");
+		information->argument_vector = strtow(information->arguments, " \t");
 		if (!information->argument_vector)
 		{
 			information->argument_vector = malloc(sizeof(char *) * 2);
 			if (information->argument_vector)
 			{
-				information->argument_vector[0] = string_duplicate(information->arguments);
+				information->argument_vector[0] = _strdup(information->arguments);
 				information->argument_vector[1] = NULL;
 			}
 		}
@@ -50,24 +50,24 @@ void configure_info(info_t *information, char **arg_vector)
  */
 void release_info(info_t *information, int free_all)
 {
-	free_string_array(information->argument_vector);
+	ffree(information->argument_vector);
 	information->argument_vector = NULL;
 	information->path = NULL;
 	if (free_all)
 	{
 		if (!information->command_buffer)
-			free(information->arguments);
-		if (information->environment)
-			free_list(&(information->environment));
+			free(information->argument);
+		if (information->env)
+			free_linked_list(&(information->env));
 		if (information->history)
-			free_list(&(information->history));
-		if (information->aliases)
-			free_list(&(information->aliases));
-		free_string_array(information->environment_variables);
-		information->environment_variables = NULL;
-		free_buffer((void **)information->command_buffer);
-		if (information->read_fd > 2)
-			close(information->read_fd);
+			free_linked_list(&(information->history));
+		if (information->alias)
+			free_linked_list(&(information->alias));
+		ffree(information->environ);
+		information->environ = NULL;
+		bfree((void **)information->command_buffer);
+		if (information->readfd > 2)
+			close(information->readfd);
 		_putchar(BUFFER_FLUSH);
 	}
 }

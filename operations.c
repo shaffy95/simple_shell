@@ -31,13 +31,13 @@ char *_strncpy(char *destination, char *source, int limit)
 }
 
 /**
- * concatenateLimitedStrings - concatenates two strings with a character limit
+ * _strncat - concatenates two strings with a character limit
  * @first: the first string
  * @second: the second string
  * @limit: the maximum number of characters to be used
  * Return: the concatenated string
  */
-char *concatenateLimitedStrings(char *first, char *second, int limit)
+char *_strncat(char *first, char *second, int limit)
 {
 	int firstIndex, secondIndex;
 	char *result = first;
@@ -58,12 +58,12 @@ char *concatenateLimitedStrings(char *first, char *second, int limit)
 }
 
 /**
- **findCharacterInString - locates a character in a string
+ **_strchr - locates a character in a string
  *@stringToSearch: the string to be parsed
  *@characterToFind: the character to look for
  *Return: (stringToSearch) a pointer to the memory area of the string
  */
-char *findCharacterInString(char *stringToSearch, char characterToFind)
+char *_strchr(char *stringToSearch, char characterToFind)
 {
 	do {
 		if (*stringToSearch == characterToFind)

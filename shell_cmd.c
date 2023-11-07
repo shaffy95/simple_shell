@@ -8,7 +8,7 @@
  */
 int print_environment(info_t *info)
 {
-	print_environment_list(info->env);
+	print_dlist(info->env);
 	return (0);
 }
 
@@ -26,7 +26,7 @@ char *get_env(info_t *info, const char *variable_name)
 
 	while (node)
 	{
-		value = pnode(node->str, variable_name);
+		value = string_starts_with(node->str, variable_name);
 		if (value && *value)
 			return (value);
 		node = node->next;
@@ -45,7 +45,7 @@ int set_env(info_t *info)
 {
 	if (info->argc != 3)
 	{
-		shell_eputs("Incorrect number of arguments\n");
+		_eputs("Incorrect number of arguments\n");
 		return (1);
 	}
 
@@ -66,7 +66,7 @@ int un_setenv(info_t *info)
 
 	if (info->argc == 1)
 	{
-		shell_eputs("Too few arguments.\n");
+		_eputs("Too few arguments.\n");
 		return (1);
 	}
 	for (index = 1; index <= info->argc; index++)
@@ -86,8 +86,8 @@ int populate_environment_list(info_t *info)
 	list_t *node = NULL;
 	size_t index;
 
-	for (index = 0; environt[index]; index++)
-		insert_enode(&node, environt[index], 0);
+	for (index = 0; environ[index]; index++)
+		insert_enode(&node, environ[index], 0);
 	info->env = node;
 	return (0);
 }

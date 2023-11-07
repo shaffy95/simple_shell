@@ -27,7 +27,7 @@ int unset_alias(info_t *info, char *alias_string)
 	char original_character;
 	int result;
 
-	equal_sign_position = copyLimitedString(alias_string, "=", 1024);
+	equal_sign_position = _strncpy(alias_string, "=", 1024);
 	if (!equal_sign_position)
 		return (1);
 
@@ -55,12 +55,12 @@ int set_alias(info_t *info, char *alias_string)
 {
 	char *equal_sign_position;
 
-	equal_sign_position = copyLimitedString(alias_string, "=", 1024);
+	equal_sign_position = _strncpy(alias_string, "=", 1024);
 	if (!equal_sign_position)
 		return (1);
 
 	if (!*++equal_sign_position)
-		return unset_alias(info, alias_string);
+		return (unset_alias(info, alias_string));
 
 	unset_alias(info, alias_string);
 	return (insert_enode(&(info->alias), alias_string, 0) == NULL);
@@ -78,7 +78,7 @@ int print_alias(list_t *alias_node)
 
 	if (alias_node)
 	{
-		equal_sign_position = copyLimitedString(alias_node->alias_string, "=", 1024);
+		equal_sign_position = _strncpy(alias_node->alias_string, "=", 1024);
 		for (alias = alias_node->alias_string; alias <= equal_sign_position; alias++)
 			_putchar(*alias);
 		_putchar('\'');
@@ -115,7 +115,7 @@ int alias_command(info_t *info)
 
 	for (index = 1; info->argv[index]; index++)
 	{
-		equal_sign_position = copyLimitedString(info->argv[index], "=", 1024);
+		equal_sign_position = _strncpy(info->argv[index], "=", 1024);
 		if (equal_sign_position)
 			set_alias(info, info->argv[index]);
 		else

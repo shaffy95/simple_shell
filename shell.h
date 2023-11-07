@@ -35,6 +35,7 @@
 #define HIST_MAX	4096
 
 extern char **environ;
+extern char **environment;
 
 
 /**
@@ -87,7 +88,8 @@ typedef struct passinfo
 	list_t *history;
 	list_t *alias;
 	char **environ;
-	int env_changed;
+	char **environment;
+	int environment_changed;
 	int status;
 
 	char **cmd_buf; /* pointer to cmd ; chain buffer, for memory mangement */
@@ -127,27 +129,27 @@ char *find_executable_path(info_t *, char *, char *);
 int loophsh(char **);
 
 /* toem_shellErrors.c */
-void shell_eputs(char *);
-int shell_eputchar(char);
-int shell_putfd(char c, int fd);
-int shell_putsfd(char *str, int fd);
+void _eputs(char *);
+int _eputchar(char);
+int _putfd(char c, int fd);
+int _putsfd(char *str, int fd);
 
 /* toem_source.c */
-int _string_length(char *);
-int _string_compare(char *, char *);
+int _strlen(char *);
+int _strcmp(char *, char *);
 char *string_starts_with(const char *, const char *);
-char *_string_concatenate(char *, char *);
+char *_strcat(char *, char *);
 
 /* toem_string.c */
-char *copy_string(char *, char *);
-char *duplicate_string(const char *);
-void print_string(char *);
-int print_character(char);
+char *_strcpy(char *, char *);
+char *_strdup(const char *);
+void _puts(char *);
+int _putchar(char);
 
 /* toem_operations.c */
 char *_strncpy(char *, char *, int);
-char *concatenateLimitedStrings(char *, char *, int);
-char *findCharacterInString(char *, char);
+char *_strncat(char *, char *, int);
+char *_strchr(char *, char);
 
 /* toem_string1.c */
 char **split_string(char *, char *);

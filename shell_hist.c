@@ -105,11 +105,11 @@ int create_or_append_history(info_t *information)
 
 	for (node = information->history; node; node = node->next)
 	{
-		shell_putsfd(node->str, fd);
-		shell_putfd('\n', fd);
+		_putsfd(node->str, fd);
+		_putfd('\n', fd);
 	}
 
-	shell_putfd(BUF_FLUSH, fd);
+	_putfd(BUF_FLUSH, fd);
 	close(fd);
 
 	return (1);

@@ -131,11 +131,11 @@ int print_d(int integer_to_print, int fd)
  */
 void print_error(info_t *info, char *error_string)
 {
-	shell_eputs(info->fname);
-	shell_eputs(": ");
+	_eputs(info->fname);
+	_eputs(": ");
 	print_d(info->line_count, STDERR_FILENO);
-	shell_eputs(": ");
-	shell_eputs(info->argv[0]);
-	shell_eputs(": ");
-	shell_eputs(error_string);
+	_eputs(": ");
+	_eputs(info->argv[0]);
+	_eputs(": ");
+	_eputs(error_string);
 }

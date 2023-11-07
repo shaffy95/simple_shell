@@ -26,18 +26,18 @@ int main(int argument_count, char **argument_vector)
 				exit(126);
 			if (errno == ENOENT)
 			{
-				shell_eputs(argument_vector[0]);
-				shell_eputs(": 0: Can't open ");
-				shell_eputs(argument_vector[1]);
-				shell_eputchar('\n');
-				shell_eputchar(BUF_FLUSH);
+				_eputs(argument_vector[0]);
+				_eputs(": 0: Can't open ");
+				_eputs(argument_vector[1]);
+				_eputchar('\n');
+				_eputchar(BUF_FLUSH);
 				exit(127);
 			}
 			return (EXIT_FAILURE);
 		}
 		information->readfd = file_descriptor;
 	}
-	populate_env_list(information);
+	populate_environment_list(information);
 	read_history(information);
 	hsh(information, argument_vector);
 	return (EXIT_SUCCESS);
