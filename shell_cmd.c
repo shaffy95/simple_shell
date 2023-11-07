@@ -13,20 +13,20 @@ int print_environment(info_t *info)
 }
 
 /**
- * getenv - Gets the value of an environment variable.
+ * get_env - Gets the value of an environment variable.
  * @info: Structure containing potential arguments. Used to maintain
  * @variable_name: Name of the environment variable to retrieve.
  *
  * Return: The value of the environment variable or NULL if not found.
  */
-char *getenv(info_t *info, const char *variable_name)
+char *get_env(info_t *info, const char *variable_name)
 {
 	list_t *node = info->env;
 	char *value;
 
 	while (node)
 	{
-		value = starts_with(node->str, variable_name);
+		value = pnode(node->str, variable_name);
 		if (value && *value)
 			return (value);
 		node = node->next;
@@ -35,13 +35,13 @@ char *getenv(info_t *info, const char *variable_name)
 }
 
 /**
- * setenv - Initializes a new
+ * set_env - Initializes a new
  * environment variable or modifies an existing one.
  * @info: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
  * Return: 0 on success, 1 on failure
  */
-int setenv(info_t *info)
+int set_env(info_t *info)
 {
 	if (info->argc != 3)
 	{
@@ -49,28 +49,28 @@ int setenv(info_t *info)
 		return (1);
 	}
 
-	if (setenv(info, info->argv[1], info->argv[2]) == 0)
+	if (_setenv(info, info->argv[1], info->argv[2]) == 0)
 		return (0);
 	return (1);
 }
 
 /**
- * unsetenv - Removes an environment variable.
+ * un_setenv - Removes an environment variable.
  * @info: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
  * Return: Always 0
  */
-int unsetenv(info_t *info)
+int un_setenv(info_t *info)
 {
-	int i;
+	int index;
 
 	if (info->argc == 1)
 	{
 		shell_eputs("Too few arguments.\n");
 		return (1);
 	}
-	for (i = 1; i <= info->argc; i++)
-		unsetenv(info, info->argv[i]);
+	for (index = 1; index <= info->argc; index++)
+		_unsetenv(info, info->argv[index]);
 
 	return (0);
 }
@@ -84,10 +84,10 @@ int unsetenv(info_t *info)
 int populate_environment_list(info_t *info)
 {
 	list_t *node = NULL;
-	size_t i;
+	size_t index;
 
-	for (i = 0; environ[i]; i++)
-		add_node_end(&node, environ[i], 0);
+	for (index = 0; environt[index]; index++)
+		insert_enode(&node, environt[index], 0);
 	info->env = node;
 	return (0);
 }

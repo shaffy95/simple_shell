@@ -23,7 +23,7 @@ ssize_t input_buffer(info_t *info, char **buffer, size_t *length)
 #if USE_GETLINE
 		bytes_read = getline(buffer, &buffer_length, stdin);
 #else
-		bytes_read = _getline(info, buffer, &buffer_length);
+		bytes_read = shell_getline(info, buffer, &buffer_length);
 #endif
 		if (bytes_read > 0)
 		{
@@ -35,7 +35,7 @@ ssize_t input_buffer(info_t *info, char **buffer, size_t *length)
 			}
 			info->linecount_flag = 1;
 			remove_comments(*buffer);
-			build_history_list(info, *buffer, info->histcount++);
+			add_history_entry(info, *buffer, info->histcount++);
 			/* if (_strchr(*buffer, ';')) Is this a command chain? */
 			{
 				*length = bytes_read;
@@ -60,7 +60,7 @@ ssize_t get_input(info_t *info)
 	char **buffer_ptr = &(info->arg), *position;
 
 	_putchar(BUF_FLUSH);
-	bytes_read = input_buf(info, &chain_buffer, &buffer_length);
+	bytes_read = input_buffer(info, &chain_buffer, &buffer_length);
 	if (bytes_read == -1)
 		return (-1);
 	if (buffer_length)
@@ -72,7 +72,7 @@ ssize_t get_input(info_t *info)
 				buffer_length);
 		while (current_position < buffer_length)
 		{
-			if (is_chain(info, chain_buffer, &current_position))
+			if (chain_delimiter(info, chain_buffer, &current_position))
 				break;
 			current_position++;
 		}

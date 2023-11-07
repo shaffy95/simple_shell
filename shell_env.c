@@ -13,7 +13,7 @@ char **get_environment(info_t *information)
 			information->environment_changed)
 	{
 		information->environment =
-			list_to_strings(information->environment_list);
+			list_to_array(information->environment_list);
 		information->environment_changed = 0;
 	}
 
@@ -21,13 +21,13 @@ char **get_environment(info_t *information)
 }
 
 /**
- * unsetenv - Remove an environment variable.
+ * _unsetenv - Remove an environment variable.
  * @information: A structure containing potential arguments.
  * Used to maintain a constant function prototype.
  * Return: 1 on successful deletion, 0 otherwise
  * @variable: The property of the environment variable to remove
  */
-int unsetenv(info_t *information, char *variable)
+int _unsetenv(info_t *information, char *variable)
 {
 	list_t *node = information->environment_list;
 	size_t index = 0;
@@ -41,8 +41,7 @@ int unsetenv(info_t *information, char *variable)
 		ptr = starts_with(node->str, variable);
 		if (ptr && *ptr == '=')
 		{
-			information->environment_changed =
-				delete_node_at_index
+			information->environment_changed = remove_si_node
 				(&(information->environment_list), index);
 			index = 0;
 			node = information->environment_list;
@@ -55,7 +54,7 @@ int unsetenv(info_t *information, char *variable)
 }
 
 /**
- * setenv - Initialize a new environment
+ * _setenv - Initialize a new environment
  * variable or modify an existing one.
  * @information: A structure containing potential arguments.
  * Used to maintain a constant function prototype.
@@ -63,7 +62,7 @@ int unsetenv(info_t *information, char *variable)
  * @value: The value of the environment variable
  * Return: Always 0
  */
-int setenv(info_t *information, char *variable, char *value)
+int _setenv(info_t *information, char *variable, char *value)
 {
 	char *buffer = NULL;
 	list_t *node;
@@ -81,7 +80,7 @@ int setenv(info_t *information, char *variable, char *value)
 	node = information->environment_list;
 	while (node)
 	{
-		ptr = starts_with(node->str, variable);
+		ptr = pnode(node->str, variable);
 		if (ptr && *ptr == '=')
 		{
 			free(node->str);
@@ -91,7 +90,7 @@ int setenv(info_t *information, char *variable, char *value)
 		}
 		node = node->next;
 	}
-	add_node_end(&(information->environment_list), buffer, 0);
+	insert_enode(&(information->environment_list), buffer, 0);
 	free(buffer);
 	information->environment_changed = 1;
 	return (0);

@@ -8,55 +8,44 @@
  */
 int read_history(info_t *info)
 {
-	int index, last_index = 0, line_count = 0;
-	ssize_t file_descriptor, read_length, file_size = 0;
-	struct stat file_stat;
-	char *buffer = NULL, *history_file = get_history_file(info);
+	int index, last = 0, lineCt = 0;
+	ssize_t fd, read_length, file_size = 0;
+	struct stat start;
+	char *buffer = NULL, *file_name = get_history_file(info);
 
-	if (!history_file)
+	if (!file_name)
 		return (0);
 
-	file_descriptor = open(history_file, O_RDONLY);
-	free(history_file);
-	if (file_descriptor == -1)
+	fd = open(file_name, O_RDONLY);
+	free(file_name);
+	if (fd == -1)
 		return (0);
-
-	if (!fstat(file_descriptor, &file_stat))
-		file_size = file_stat.st_size;
-
+	if (!fstat(fd, &start))
+		file_size = st.start_size;
 	if (file_size < 2)
 		return (0);
-
 	buffer = malloc(sizeof(char) * (file_size + 1));
 	if (!buffer)
 		return (0);
-
-	read_length = read(file_descriptor, buffer, file_size);
-	buffer[file_size] = 0;
-
+	read_length = read(fd, buffer, file_size);
+	buf[file_size] = 0;
 	if (read_length <= 0)
 		return (free(buffer), 0);
-
-	close(file_descriptor);
-
+	close(fd);
 	for (index = 0; index < file_size; index++)
 		if (buffer[index] == '\n')
 		{
 			buffer[index] = 0;
-			build_history_list(info, buffer + last_index, line_count++);
-			last_index = index + 1;
+			add_history_entry(info, buffer + last, lineCt++);
+			last = index + 1;
 		}
-
-	if (last_index != index)
-		build_history_list(info, buffer + last_index, line_count++);
-
+	if (last != index)
+		add_history_entry(info, buffer + last, lineCt++);
 	free(buffer);
-	info->histcount = line_count;
-
+	info->histcount = lineCt;
 	while (info->histcount-- >= HIST_MAX)
-		delete_node_at_index(&(info->history), 0);
-
-	renumber_history(info);
+		remove_si_node(&(info->history), 0);
+	update_history_count(info);
 	return (info->histcount);
 }
 
@@ -70,7 +59,7 @@ char *get_history_file(info_t *information)
 {
 	char *history_directory, *history_path;
 
-	history_directory = _getenv(information, "HOME=");
+	history_directory = getenv(information, "HOME=");
 	if (!history_directory)
 		return (NULL);
 
@@ -101,27 +90,27 @@ char *get_history_file(info_t *information)
  */
 int create_or_append_history(info_t *information)
 {
-	ssize_t file_descriptor;
+	ssize_t fd;
 	char *file_name = get_history_file(information);
 	list_t *node = NULL;
 
 	if (!file_name)
 		return (-1);
 
-	file_descriptor = open(file_name, O_CREAT | O_TRUNC | O_RDWR, 0644);
+	fd = open(file_name, O_CREAT | O_TRUNC | O_RDWR, 0644);
 	free(file_name);
 
-	if (file_descriptor == -1)
+	if (fd == -1)
 		return (-1);
 
 	for (node = information->history; node; node = node->next)
 	{
-		shell_putsfd(node->str, file_descriptor);
-		shell_putfd('\n', file_descriptor);
+		shell_putsfd(node->str, fd);
+		shell_putfd('\n', fd);
 	}
 
-	shell_putfd(BUF_FLUSH, file_descriptor);
-	close(file_descriptor);
+	shell_putfd(BUF_FLUSH, fd);
+	close(fd);
 
 	return (1);
 }
@@ -142,7 +131,7 @@ int add_history_entry(info_t *info, char *entry_text, int entry_count)
 	if (info->command_history)
 		new_entry = info->command_history;
 
-	add_node_end(&new_entry, entry_text, entry_count);
+	insert_enode(&new_entry, entry_text, entry_count);
 
 	if (!info->command_history)
 		info->command_history = new_entry;

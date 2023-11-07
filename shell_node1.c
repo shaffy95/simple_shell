@@ -92,7 +92,7 @@ list_t *find_pnode(list_t *node, char *prefix, char next_char)
 
 	while (node)
 	{
-		m = starts_with(node->str, prefix);
+		m = pnode(node->str, prefix);
 		if (m && ((next_char == -1) || (*m == next_char)))
 			return (node);
 		node = node->next;

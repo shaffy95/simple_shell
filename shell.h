@@ -47,6 +47,7 @@ typedef struct liststr
 {
 	int num;
 	char *str;
+	char *alias_string;
 	struct liststr *next;
 } list_t;
 
@@ -126,10 +127,10 @@ char *find_executable_path(info_t *, char *, char *);
 int loophsh(char **);
 
 /* toem_shellErrors.c */
-void _eputs(char *);
-int _eputchar(char);
-int _putfd(char c, int fd);
-int _putsfd(char *str, int fd);
+void shell_eputs(char *);
+int shell_eputchar(char);
+int shell_putfd(char c, int fd);
+int shell_putsfd(char *str, int fd);
 
 /* toem_source.c */
 int _string_length(char *);
@@ -144,7 +145,7 @@ void print_string(char *);
 int print_character(char);
 
 /* toem_operations.c */
-char *copyLimitedString(char *, char *, int);
+char *_strncpy(char *, char *, int);
 char *concatenateLimitedStrings(char *, char *, int);
 char *findCharacterInString(char *, char);
 
@@ -180,17 +181,13 @@ int showHelp(info_t *);
 
 /* toem_util.c */
 int display_history(info_t *);
-int unset_alias(info_t char *);
-int set_alias(info_t *, char *);
-int print_alias_string(list_t *);
 int alias_command(info_t *);
-ssize_t input_buffer(info_t *, char **, size_t *);
 
 /*toem_buffer.c */
 ssize_t read_buffer(info_t *, char *, size_t *);
 ssize_t get_input(info_t *);
 int shell_getline(info_t *, char **, size_t *);
-void sigintHandler(_attribute_((unused))int sig_num);
+void sigintHandler(int);
 
 /* toem_input.c */
 void initialize_info(info_t *);
@@ -198,16 +195,16 @@ void configure_info(info_t *, char **);
 void release_info(info_t *, int);
 
 /* toem_cmd.c */
-char *getenv(info_t *, const char *);
+char *get_env(info_t *, const char *);
 int print_environment(info_t *);
-int setenv(info_t *);
-int unsetenv(info_t *);
+int set_env(info_t *);
+int un_setenv(info_t *);
 int populate_environment_list(info_t *);
 
 /* toem_env.c */
 char **get_environ(info_t *);
-int unsetenv(info_t *, char *);
-int setenv(info_t *, char *, char *);
+int _unsetenv(info_t *, char *);
+int _setenv(info_t *, char *, char *);
 
 /* toem_hist.c */
 char *get_history_file(info_t *info);
@@ -231,7 +228,7 @@ list_t *find_pnode(list_t *, char *, char);
 ssize_t get_inode(list_t *, list_t *);
 
 /* toem_replace.c */
-int chain_delimeter(info_t *, char *, size_t *);
+int chain_delimiter(info_t *, char *, size_t *);
 void check_chain(info_t *, char *, size_t *, size_t, size_t);
 int replace_alias(info_t *);
 int replace_variables(info_t *);

@@ -9,13 +9,13 @@
  */
 int is_command_executable(info_t *info, char *file_path)
 {
-	struct stat file_stat;
+	struct stat start;
 
 	(void)info;
-	if (!file_path || stat(file_path, &file_stat))
+	if (!file_path || stat(file_path, &start))
 		return (0);
 
-	if (file_stat.st_mode & S_IFREG)
+	if (st.start_mode & S_IFREG)
 	{
 		return (1);
 	}
@@ -58,7 +58,7 @@ char *find_executable_path(info_t *info, char *path_string, char *command)
 
 	if (!path_string)
 		return (NULL);
-	if ((strlen(command) > 2) && starts_with(command, "./"))
+	if ((_strlen(command) > 2) && starts_with(command, "./"))
 	{
 		if (is_command_executable(info, command))
 			return (command);
@@ -69,11 +69,11 @@ char *find_executable_path(info_t *info, char *path_string, char *command)
 		{
 			path = duplicate_characters(path_string, current_position, index);
 			if (!*path)
-				strcat(path, command);
+				_strcat(path, command);
 			else
 			{
-				strcat(path, "/");
-				strcat(path, command);
+				_strcat(path, "/");
+				_strcat(path, command);
 			}
 			if (is_command_executable(info, path))
 				return (path);

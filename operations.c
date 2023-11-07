@@ -1,13 +1,13 @@
 #include "shell.h"
 
 /**
- * copyLimitedString - copies a string up to a certain limit
+ * _strncpy - copies a string up to a certain limit
  * @destination: the destination string to be copied to
  * @source: the source string
  * @limit: the maximum number of characters to be copied
  * Return: the concatenated string
  */
-char *copyLimitedString(char *destination, char *source, int limit)
+char *_strncpy(char *destination, char *source, int limit)
 {
 	int sourceIndex, destIndex;
 	char *result = destination;
