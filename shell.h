@@ -66,10 +66,9 @@ typedef struct liststr
  *@fname: the program filename
  *@env: linked list local copy of environ
  *@environ: custom modified copy of environ from LL env
- *@environment: environment lists
  *@history: the history node
  *@alias: the alias node
- *@environment_changed: on if environ was changed
+ *@env_changed: on if environ was changed
  *@status: the return status of the last exec'd command
  *@cmd_buf: address of pointer to cmd_buf, on if chaining
  *@cmd_buf_type: CMD_type ||, &&, ;
@@ -90,8 +89,7 @@ typedef struct passinfo
 	list_t *history;
 	list_t *alias;
 	char **environ;
-	char **environment;
-	int environment_changed;
+	int env_changed;
 	int status;
 
 	char **cmd_buf; /* pointer to cmd ; chain buffer, for memory mangement */

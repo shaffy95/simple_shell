@@ -66,7 +66,7 @@ void release_info(info_t *information, int free_all)
 			free_linked_list(&(information->alias));
 		ffree(information->environ);
 		information->environ = NULL;
-		bfree((void **)information->cmd_buf);
+		free_and_null_pointer((void **)information->cmd_buf);
 		if (information->readfd > 2)
 			close(information->readfd);
 		_putchar(BUF_FLUSH);

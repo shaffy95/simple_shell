@@ -13,7 +13,7 @@ int print_environment(info_t *info)
 }
 
 /**
- * get_env - Gets the value of an environment variable.
+ * _getenv - Gets the value of an environment variable.
  * @info: Structure containing potential arguments. Used to maintain
  * @variable_name: Name of the environment variable to retrieve.
  *
@@ -26,7 +26,7 @@ char *_getenv(info_t *info, const char *variable_name)
 
 	while (node)
 	{
-		value = string_starts_with(node->str, variable_name);
+		value = starts_with(node->str, variable_name);
 		if (value && *value)
 			return (value);
 		node = node->next;

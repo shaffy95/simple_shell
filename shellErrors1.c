@@ -96,7 +96,7 @@ int print_d(int integer_to_print, int fd)
 	unsigned int _abs_, current;
 
 	if (fd == STDERR_FILENO)
-		__putchar = shell_eputchar;
+		__putchar = _eputchar;
 
 	if (integer_to_print < 0)
 	{

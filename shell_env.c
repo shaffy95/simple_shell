@@ -7,17 +7,17 @@
  * Used to maintain a constant function prototype.
  * Return: Always 0
  */
-char **get_environment(info_t *information)
+char **get_environ(info_t *information)
 {
-	if (!information->environment ||
-			information->environment_changed)
+	if (!information->environ ||
+			information->env_changed)
 	{
-		information->environment =
+		information->environ =
 			list_to_array(information->env);
-		information->environment_changed = 0;
+		information->env_changed = 0;
 	}
 
-	return (information->environment);
+	return (information->environ);
 }
 
 /**
@@ -38,10 +38,10 @@ int _unsetenv(info_t *information, char *variable)
 
 	while (node)
 	{
-		ptr = string_starts_with(node->str, variable);
+		ptr = starts_with(node->str, variable);
 		if (ptr && *ptr == '=')
 		{
-			information->environment_changed = remove_si_node
+			information->env_changed = remove_si_node
 				(&(information->env), index);
 			index = 0;
 			node = information->env;
@@ -50,7 +50,7 @@ int _unsetenv(info_t *information, char *variable)
 		node = node->next;
 		index++;
 	}
-	return (information->environment_changed);
+	return (information->env_changed);
 }
 
 /**
@@ -80,18 +80,18 @@ int _setenv(info_t *information, char *variable, char *value)
 	node = information->env;
 	while (node)
 	{
-		ptr = string_starts_with(node->str, variable);
+		ptr = starts_with(node->str, variable);
 		if (ptr && *ptr == '=')
 		{
 			free(node->str);
 			node->str = buffer;
-			information->environment_changed = 1;
+			information->env_changed = 1;
 			return (0);
 		}
 		node = node->next;
 	}
 	insert_enode(&(information->env), buffer, 0);
 	free(buffer);
-	information->environment_changed = 1;
+	information->env_changed = 1;
 	return (0);
 }
