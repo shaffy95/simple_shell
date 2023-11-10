@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * get_environment - Returns a copy of the string
+ * get_environ - Returns a copy of the string
  * array representing the environment.
  * @information: A structure containing potential arguments.
  * Used to maintain a constant function prototype.
