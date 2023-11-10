@@ -199,7 +199,7 @@ void configure_info(info_t *, char **);
 void release_info(info_t *, int);
 
 /* toem_cmd.c */
-char *get_env(info_t *, const char *);
+char *_getenv(info_t *, const char *);
 int print_environment(info_t *);
 int set_env(info_t *);
 int un_setenv(info_t *);

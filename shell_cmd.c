@@ -19,7 +19,7 @@ int print_environment(info_t *info)
  *
  * Return: The value of the environment variable or NULL if not found.
  */
-char *get_env(info_t *info, const char *variable_name)
+char *_getenv(info_t *info, const char *variable_name)
 {
 	list_t *node = info->env;
 	char *value;

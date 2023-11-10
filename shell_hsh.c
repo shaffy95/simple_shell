@@ -109,7 +109,7 @@ void find_command(info_t *info)
 	else
 	{
 		if ((shell_is_active(info) || _getenv(info, "PATH=")
-					|| info->argv[0][0] == '/') && is_command(info, info->argv[0]))
+					|| info->argv[0][0] == '/') && is_command_executable(info, info->argv[0]))
 			fork_command(info);
 		else if (*(info->arg) != '\n')
 		{
