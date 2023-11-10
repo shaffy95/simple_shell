@@ -14,24 +14,24 @@ int hsh(info_t *info, char **av)
 
 	while (read_result != -1 && builtin_result != -2)
 	{
-		clear_info(info);
+		initialize_info(info);
 		if (shell_is_active(info))
-			shell_puts("$ ");
-		shell_eputchar(BUF_FLUSH);
+			_puts("$ ");
+		_eputchar(BUF_FLUSH);
 		read_result = get_input(info);
 		if (read_result != -1)
 		{
-			set_info(info, av);
+			configure_info(info, av);
 			builtin_result = find_builtin(info);
 			if (builtin_result == -1)
 				find_command(info);
 		}
 		else if (shell_is_active(info))
 			_putchar('\n');
-		free_info(info, 0);
+		release_info(info, 0);
 	}
-	write_history(info);
-	free_info(info, 1);
+	create_or_append_history(info);
+	release_info(info, 1);
 	if (!shell_is_active(info) && info->status)
 		exit(info->status);
 	if (builtin_result == -2)
@@ -60,8 +60,8 @@ int find_builtin(info_t *info)
 		{"env", print_environment},
 		{"help", showHelp},
 		{"history", display_history},
-		{"setenv", setenv},
-		{"unsetenv", unsetenv},
+		{"setenv", set_env},
+		{"unsetenv", un_setenv},
 		{"cd", changeCurrentDirectory},
 		{"alias", alias_command},
 		{NULL, NULL}
@@ -86,7 +86,7 @@ int find_builtin(info_t *info)
 void find_command(info_t *info)
 {
 	char *path = NULL;
-	int index, g;
+	int index, kite;
 
 	info->path = info->argv[0];
 	if (info->linecount_flag == 1)
@@ -94,14 +94,13 @@ void find_command(info_t *info)
 		info->line_count++;
 		info->linecount_flag = 0;
 	}
-	for (index = 0, g = 0; info->arg[index]; index++)
-		if (!is_delim(info->arg[index], " \t\n"))
-			g++;
-	if (!g)
+	for (index = 0, kite = 0; info->arg[index]; index++)
+		if (!char_is_delim(info->arg[index], " \t\n"))
+			kite++;
+	if (!kite)
 		return;
 
-	path = find_path(info, getenv(info, "PATH="),
-			info->argv[0]);
+	path = find_executable_path(info, _getenv(info, "PATH="), info->argv[0]);
 	if (path)
 	{
 		info->path = path;
@@ -109,8 +108,8 @@ void find_command(info_t *info)
 	}
 	else
 	{
-		if ((interactive(info) || getenv(info, "PATH=")
-					|| info->argv[0][0] == '/') && is_command(info, info->argv[0])
+		if ((shell_is_active(info) || _getenv(info, "PATH=")
+					|| info->argv[0][0] == '/') && is_command(info, info->argv[0]))
 			fork_command(info);
 		else if (*(info->arg) != '\n')
 		{
@@ -139,9 +138,9 @@ void fork_command(info_t *info)
 	}
 	if (child_pid == 0)
 	{
-		if (execve(info->path, info->argv, getenv(info)) == -1)
+		if (execve(info->path, info->argv, get_environ(info)) == -1)
 		{
-			free_info(info, 1);
+			release_info(info, 1);
 			if (errno == EACCES)
 				exit(126);
 			exit(1);

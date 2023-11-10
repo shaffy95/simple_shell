@@ -43,6 +43,7 @@ extern char **environment;
  * @num: the number field
  * @str: a string
  * @next: points to the next node
+ * @alias_string - string alias
  */
 typedef struct liststr
 {
@@ -65,9 +66,10 @@ typedef struct liststr
  *@fname: the program filename
  *@env: linked list local copy of environ
  *@environ: custom modified copy of environ from LL env
+ *@environment: environment lists
  *@history: the history node
  *@alias: the alias node
- *@env_changed: on if environ was changed
+ *@environment_changed: on if environ was changed
  *@status: the return status of the last exec'd command
  *@cmd_buf: address of pointer to cmd_buf, on if chaining
  *@cmd_buf_type: CMD_type ||, &&, ;
@@ -137,7 +139,7 @@ int _putsfd(char *str, int fd);
 /* toem_source.c */
 int _strlen(char *);
 int _strcmp(char *, char *);
-char *string_starts_with(const char *, const char *);
+char *starts_with(const char *, const char *);
 char *_strcat(char *, char *);
 
 /* toem_string.c */
@@ -152,7 +154,7 @@ char *_strncat(char *, char *, int);
 char *_strchr(char *, char);
 
 /* toem_string1.c */
-char **split_string(char *, char *);
+char **strtow(char *, char *);
 char **strtow2(char *, char);
 
 /* toem_pointer.c */
@@ -213,7 +215,7 @@ char *get_history_file(info_t *info);
 int create_or_append_history(info_t *info);
 int read_history(info_t *info);
 int add_history_entry(info_t *info, char *buf, int linecount);
-int update_history(info_t *info);
+int update_history_count(info_t *info);
 
 /* toem_node.c */
 list_t *insert_snode(list_t **, const char *, int);

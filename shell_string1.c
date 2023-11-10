@@ -1,85 +1,95 @@
 #include "shell.h"
 
 /**
- * allocate_array - Allocates memory for the word_array
- * @count: The number of words
- * @array: A pointer to the word_array
- * @string: The input string
- * @dex: The current character index
+ * strtow2 - Allocates memory for the word_array
+ * @str: The input string
  * @delim: The delimiters used for splitting
  * Return: 1 on success, 0 on failure
  */
-int allocate_array(int count, char **array, char *string, int dex, char *delim)
+char **strtow2(char *str, char delim)
 {
-	int word_index = 0, char_copy = 0;
+	int index, current, kite, maze, nums = 0;
+	char **string;
 
-	while (word_index < count)
+	if (str == NULL || str[0] == 0)
+		return (NULL);
+	for (index = 0; str[index] != '\0'; index++)
+		if ((str[index] != delim && str[index + 1] == delim) ||
+				(str[index] != delim && !str[index + 1]) || str[index + 1] == delim)
+			nums++;
+	if (nums == 0)
+		return (NULL);
+	string = malloc((1 + nums) * sizeof(char *));
+	if (!string)
+		return (NULL);
+	for (index = 0, current = 0; current < nums; current++)
 	{
-		while (is_delimiter(string[dex], delim))
-			dex++;
-
-		char_copy = 0;
-
-		while (!is_delimiter(string[dex + char_copy], delim) &&
-				string[dex + char_copy])
-			char_copy++;
-
-		array[word_index] = malloc((char_copy + 1) * sizeof(char));
-
-		if (!array[word_index])
+		while (str[index] == delim && str[index] != delim)
+			index++;
+		kite = 0;
+		while (str[index + kite] != delim && str[index + kite] &&
+				str[index + kite] != delim)
+			kite++;
+		string[current] = malloc((kite + 1) * sizeof(char));
+		if (!string[current])
 		{
-			while (word_index > 0)
-				free(array[--word_index]);
-			free(array);
-			return (0);
+			for (kite = 0; kite < current; kite++)
+				free(string[kite]);
+			free(string);
+			return (NULL);
 		}
-
-		for (int index = 0; index < char_copy; index++)
-			array[word_index][index] = string[dex++];
-		array[word_index][char_copy] = 0;
-		word_index++;
+		for (maze = 0; maze < kite; maze++)
+			string[current][maze] = str[index++];
+		string[current][maze] = 0;
 	}
-	array[word_index] = NULL;
-	return (1);
+	string[current] = NULL;
+	return (string);
 }
 
 /**
- * split_string - splits a string into words using specified delimiters
- * @input_string: the input string to be split
+ * strtow - splits a string into words using specified delimiters
+ * @str: the input string to be split
  * @delim: the delimiters used for splitting
  * Return: a pointer to an array of strings, or NULL on failure
  */
-char **split_string(char *input_string, char *delim)
+char **strtow(char *str, char *delim)
 {
-	int index = 0, count = 0;
-	char **word_array;
+	int index, current, kite, maze, nums = 0;
+	char **string;
 
-	if (input_string == NULL || input_string[0] == 0)
+	if (str == NULL || str[0] == 0)
 		return (NULL);
-
 	if (!delim)
 		delim = " ";
+	for (index = 0; str[index] != '\0'; index++)
+		if (!char_is_delim(str[index], delim) && (char_is_delim(str[index + 1],
+						delim) || !str[index + 1]))
+			nums++;
 
-	while (input_string[index] != '\0')
-	{
-		if (!is_delimiter(input_string[index], delim) &&
-				(is_delimiter(input_string[index + 1], delim)
-				 || !input_string[_index + 1]))
-		{
-			count++;
-		}
-		index++;
-	}
-
-	if (count == 0)
+	if (nums == 0)
 		return (NULL);
-
-	word_array = malloc((1 + count) * sizeof(char *);
-			if (!word_array)
+	string = malloc((1 + nums) * sizeof(char *));
+	if (!string)
+		return (NULL);
+	for (index = 0, current = 0; current < nums; current++)
+	{
+		while (char_is_delim(str[index], delim))
+			index++;
+		kite = 0;
+		while (!char_is_delim(str[index + kite], delim) && str[index + kite])
+			kite++;
+		string[current] = malloc((kite + 1) * sizeof(char));
+		if (!string[current])
+		{
+			for (kite = 0; kite < current; kite++)
+				free(string[kite]);
+			free(string);
 			return (NULL);
-
-			if (!allocate_array(count, word_array, input_string, 0, delim))
-			return (NULL);
-
-			return (word_array);
+		}
+		for (maze = 0; maze < kite; maze++)
+			string[current][maze] = str[index++];
+		string[current][maze] = 0;
+	}
+	string[current] = NULL;
+	return (string);
 }

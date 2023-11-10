@@ -10,7 +10,7 @@ int read_history(info_t *info)
 {
 	int index, last = 0, lineCt = 0;
 	ssize_t fd, read_length, file_size = 0;
-	struct stat start;
+	struct stat st;
 	char *buffer = NULL, *file_name = get_history_file(info);
 
 	if (!file_name)
@@ -20,15 +20,15 @@ int read_history(info_t *info)
 	free(file_name);
 	if (fd == -1)
 		return (0);
-	if (!fstat(fd, &start))
-		file_size = st.start_size;
+	if (!fstat(fd, &st))
+		file_size = st.st_size;
 	if (file_size < 2)
 		return (0);
 	buffer = malloc(sizeof(char) * (file_size + 1));
 	if (!buffer)
 		return (0);
 	read_length = read(fd, buffer, file_size);
-	buf[file_size] = 0;
+	buffer[file_size] = 0;
 	if (read_length <= 0)
 		return (free(buffer), 0);
 	close(fd);
@@ -59,27 +59,18 @@ char *get_history_file(info_t *information)
 {
 	char *history_directory, *history_path;
 
-	history_directory = getenv(information, "HOME=");
+	history_path = _getenv(information, "HOME=");
+	if (!history_path)
+		return (NULL);
+	history_directory = malloc(sizeof(char) * (_strlen(history_path)
+				+ _strlen(HIST_FILE) + 2));
 	if (!history_directory)
 		return (NULL);
-
-	size_t path_length = _strlen(history_directory) + _strlen(HIST_FILE) + 2;
-
-	history_path = malloc(sizeof(char) * path_length);
-
-	if (!history_path)
-	{
-		free(history_directory);
-		return (NULL);
-	}
-
-	history_path[0] = 0;
-	_strcpy(history_path, history_directory);
-	_strcat(history_path, "/");
-	_strcat(history_path, HIST_FILE);
-
-	free(history_directory);
-	return (history_path);
+	history_directory[0] = 0;
+	_strcpy(history_directory, history_path);
+	_strcat(history_directory, "/");
+	_strcat(history_directory, HIST_FILE);
+	return (history_directory);
 }
 
 /**
@@ -128,13 +119,13 @@ int add_history_entry(info_t *info, char *entry_text, int entry_count)
 {
 	list_t *new_entry = NULL;
 
-	if (info->command_history)
-		new_entry = info->command_history;
+	if (info->history)
+		new_entry = info->history;
 
 	insert_enode(&new_entry, entry_text, entry_count);
 
-	if (!info->command_history)
-		info->command_history = new_entry;
+	if (!info->history)
+		info->history = new_entry;
 
 	return (0);
 }

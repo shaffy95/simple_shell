@@ -41,13 +41,13 @@ int _strcmp(char *s1, char *s2)
 }
 
 /**
- * string_starts_with - checks if a string starts with a prefix
+ * starts_with - checks if a string starts with a prefix
  * @haystack: the string to search
  * @needle: the prefix to find
  *
  * Return: address of the next character of haystack or NULL
  */
-char *string_starts_with(const char *haystack, const char *needle)
+char *starts_with(const char *haystack, const char *needle)
 {
 	while (*needle)
 		if (*needle++ != *haystack++)

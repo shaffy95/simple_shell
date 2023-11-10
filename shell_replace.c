@@ -17,22 +17,21 @@ int chain_delimiter(info_t *info, char *buf, size_t *position)
 	{
 		buf[current] = 0;
 		current++;
-		info->command_buffer_type = CMD_OR;
+		info->cmd_buf_type = CMD_OR;
 	}
 	else if (buf[current] == '&' && buf[current + 1] == '&')
 	{
 		buf[current] = 0;
 		current++;
-		info->command_buffer_type = CMD_AND;
+		info->cmd_buf_type = CMD_AND;
 	}
-	else if (buf[current] == ';') /* Found the end of this command */
+	else if (buf[current] == ';') /* found end of this command */
 	{
-		buf[current] = 0; /* Replace semicolon with null */
-		info->command_buffer_type = CMD_CHAIN;
+		buf[current] = 0; /* replace semicolon with null */
+		info->cmd_buf_type = CMD_CHAIN;
 	}
 	else
 		return (0);
-
 	*position = current;
 	return (1);
 }
@@ -41,34 +40,35 @@ int chain_delimiter(info_t *info, char *buf, size_t *position)
  * check_chain - checks whether to continue chaining based on the last status
  * @info: the parameter struct
  * @buf: the character buffer
- * @pst: address of the current position in buf
- * @stat: starting position in buf
+ * @position: address of the current position in buf
+ * @index: starting position in buf
  * @len: length of buf
  *
  * Return: Void
  */
-void check_chain(info_t *info, char *buf, size_t *pst, size_t stat, size_t len)
+void check_chain(info_t *info, char *buf, size_t *position,
+		size_t index, size_t len)
 {
-	size_t current = *pst;
+	size_t current = *position;
 
-	if (info->command_buffer_type == CMD_AND)
+	if (info->cmd_buf_type == CMD_AND)
 	{
 		if (info->status)
 		{
-			buf[stat] = 0;
+			buf[index] = 0;
 			current = len;
 		}
 	}
-	if (info->command_buffer_type == CMD_OR)
+	if (info->cmd_buf_type == CMD_OR)
 	{
 		if (!info->status)
 		{
-			buf[stat] = 0;
+			buf[index] = 0;
 			current = len;
 		}
 	}
 
-	*pst = current;
+	*position = current;
 }
 
 /**
@@ -85,17 +85,17 @@ int replace_alias(info_t *info)
 
 	for (index = 0; index < 10; index++)
 	{
-		node = node_starts_with(info->alias, info->arguments[0], '=');
+		node = find_pnode(info->alias, info->argv[0], '=');
 		if (!node)
 			return (0);
-		free(info->arguments[0]);
+		free(info->argv[0]);
 		position = _strchr(node->str, '=');
 		if (!position)
 			return (0);
 		position = _strdup(position + 1);
 		if (!position)
 			return (0);
-		info->arguments[0] = position;
+		info->argv[0] = position;
 	}
 	return (1);
 }
@@ -111,31 +111,32 @@ int replace_variables(info_t *info)
 	int index = 0;
 	list_t *node;
 
-	for (index = 0; info->arguments[index]; index++)
+	for (index = 0; info->argv[index]; index++)
 	{
-		if (info->arguments[index][0] != '$' || !info->arguments[index][1])
+		if (info->argv[index][0] != '$' || !info->argv[index][1])
 			continue;
 
-		if (!_strcmp(info->arguments[index], "$?"))
+		if (!_strcmp(info->argv[index], "$?"))
 		{
-			replace_string(&(info->arguments[index]),
+			replace_string(&(info->argv[index]),
 					_strdup(convert_number(info->status, 10, 0)));
 			continue;
 		}
-		if (!_strcmp(info->arguments[index], "$$"))
+		if (!_strcmp(info->argv[index], "$$"))
 		{
-			replace_string(&(info->arguments[i]),
+			replace_string(&(info->argv[index]),
 					_strdup(convert_number(getpid(), 10, 0)));
 			continue;
 		}
-		node = node_starts_with(info->environment, &info->arguments[index][1], '=');
+		node = find_pnode(info->env, &info->argv[index][1], '=');
 		if (node)
 		{
-			replace_string(&(info->arguments[index]),
+			replace_string(&(info->argv[index]),
 					_strdup(_strchr(node->str, '=') + 1));
 			continue;
 		}
-		replace_string(&info->arguments[index], _strdup(""));
+		replace_string(&info->argv[index], _strdup(""));
+
 	}
 	return (0);
 }

@@ -167,7 +167,7 @@ int shell_getline(info_t *info, char **ptr, size_t *buffer_length)
  */
 void sigintHandler(__attribute__((unused))int sig_num)
 {
-	shell_puts("\n");
-	shell_puts("$ ");
+	_puts("\n");
+	_puts("$ ");
 	_putchar(BUF_FLUSH);
 }

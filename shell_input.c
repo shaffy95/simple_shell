@@ -6,9 +6,10 @@
  */
 void initialize_info(info_t *information)
 {
-	information->arguments = NULL;
-	information->argument_count = 0;
-	information->command_name = NULL;
+	information->arg = NULL;
+	information->argc = 0;
+	information->argv = NULL;
+	information->path = NULL;
 }
 
 /**
@@ -20,25 +21,25 @@ void configure_info(info_t *information, char **arg_vector)
 {
 	int index = 0;
 
-	information->command_name = arg_vector[0];
-	if (information->arguments)
+	information->fname = arg_vector[0];
+	if (information->arg)
 	{
-		information->argument_vector = strtow(information->arguments, " \t");
-		if (!information->argument_vector)
+		information->argv = strtow(information->arg, " \t");
+		if (!information->argv)
 		{
-			information->argument_vector = malloc(sizeof(char *) * 2);
-			if (information->argument_vector)
+			information->argv = malloc(sizeof(char *) * 2);
+			if (information->argv)
 			{
-				information->argument_vector[0] = _strdup(information->arguments);
-				information->argument_vector[1] = NULL;
+				information->argv[0] = _strdup(information->arg);
+				information->argv[1] = NULL;
 			}
 		}
-		for (index = 0; information->argument_vector &&
-				information->argument_vector[index]; index++)
+		for (index = 0; information->argv && information->argv[index];
+				index++)
 			;
-		information->argument_count = index;
+		information->argc = index;
 
-		replace_aliases(information);
+		replace_alias(information);
 		replace_variables(information);
 	}
 }
@@ -50,13 +51,13 @@ void configure_info(info_t *information, char **arg_vector)
  */
 void release_info(info_t *information, int free_all)
 {
-	ffree(information->argument_vector);
-	information->argument_vector = NULL;
+	ffree(information->argv);
+	information->argv = NULL;
 	information->path = NULL;
 	if (free_all)
 	{
-		if (!information->command_buffer)
-			free(information->argument);
+		if (!information->cmd_buf)
+			free(information->arg);
 		if (information->env)
 			free_linked_list(&(information->env));
 		if (information->history)
@@ -65,9 +66,9 @@ void release_info(info_t *information, int free_all)
 			free_linked_list(&(information->alias));
 		ffree(information->environ);
 		information->environ = NULL;
-		bfree((void **)information->command_buffer);
+		bfree((void **)information->cmd_buf);
 		if (information->readfd > 2)
 			close(information->readfd);
-		_putchar(BUFFER_FLUSH);
+		_putchar(BUF_FLUSH);
 	}
 }

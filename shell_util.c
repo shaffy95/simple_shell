@@ -82,8 +82,8 @@ int print_alias(list_t *alias_node)
 		for (alias = alias_node->alias_string; alias <= equal_sign_position; alias++)
 			_putchar(*alias);
 		_putchar('\'');
-		shell_puts(equal_sign_position + 1);
-		shell_puts("'\n");
+		_puts(equal_sign_position + 1);
+		_puts("'\n");
 		return (0);
 	}
 	return (1);

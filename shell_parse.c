@@ -9,13 +9,13 @@
  */
 int is_command_executable(info_t *info, char *file_path)
 {
-	struct stat start;
+	struct stat st;
 
 	(void)info;
-	if (!file_path || stat(file_path, &start))
+	if (!file_path || stat(file_path, &st))
 		return (0);
 
-	if (st.start_mode & S_IFREG)
+	if (st.st_mode & S_IFREG)
 	{
 		return (1);
 	}

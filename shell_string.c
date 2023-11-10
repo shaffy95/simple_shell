@@ -66,22 +66,22 @@ void _puts(char *str)
 
 /**
  * _putchar - writes the character to standard output
- * @c: The character to print
+ * @xee: The character to print
  *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
-int _putchar(char c)
+int _putchar(char xee)
 {
 	static int index;
-	static char buffer[WRITE_BUFFER_SIZE];
+	static char buffer[WRITE_BUF_SIZE];
 
-	if (c == BUFFER_FLUSH || index >= WRITE_BUFFER_SIZE)
+	if (xee == BUF_FLUSH || index >= WRITE_BUF_SIZE)
 	{
 		write(1, buffer, index);
 		index = 0;
 	}
-	if (c != BUFFER_FLUSH)
-		buffer[index++] = c;
+	if (xee != BUF_FLUSH)
+		buffer[index++] = xee;
 	return (1);
 }

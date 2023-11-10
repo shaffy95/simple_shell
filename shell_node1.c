@@ -36,7 +36,8 @@ char **list_to_array(list_t *node)
 	strs = malloc(sizeof(char *) * (array_size + 1));
 	if (!strs)
 		return (NULL);
-	for (array_size = 0; current_node; current_node = current_node->next, array_size++)
+	for (array_size = 0; current_node; current_node = current_node->next,
+			array_size++)
 	{
 		str = malloc(_strlen(current_node->str) + 1);
 		if (!str)
