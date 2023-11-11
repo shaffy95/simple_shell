@@ -3,12 +3,12 @@
 /**
  * input_buffer - Buffers chained commands from input.
  * @info: Parameter struct.
- * @buf: Address of the buffer.
+ * @buffer: Address of the buffer.
  * @length: Address of length variable.
  *
  * Return: Bytes read.
  */
-ssize_t input_buffer(info_t *info, char **buf, size_t *length)
+ssize_t input_buffer(info_t *info, char **buffer, size_t *length)
 {
 	ssize_t bytes_read = 0;
 	size_t buffer_length = 0;
@@ -17,29 +17,29 @@ ssize_t input_buffer(info_t *info, char **buf, size_t *length)
 		/* If nothing left in the buffer, fill it */
 	{
 		/*bfree((void **)info->cmd_buf);*/
-		free(*buf);
-		*buf = NULL;
+		free(*buffer);
+		*buffer = NULL;
 		signal(SIGINT, sigintHandler);
 #if USE_GETLINE
-		bytes_read = getline(buf, &buffer_length, stdin);
+		bytes_read = getline(buffer, &buffer_length, stdin);
 #else
-		bytes_read = _getline(info, buf, &buffer_length);
+		bytes_read = shell_getline(info, buffer, &buffer_length);
 #endif
 		if (bytes_read > 0)
 		{
-			if ((*buf)[bytes_read - 1] == '\n')
+			if ((*buffer)[bytes_read - 1] == '\n')
 			{
-				(*buf)[bytes_read - 1] = '\0';
+				(*buffer)[bytes_read - 1] = '\0';
 				/* Remove trailing newline */
 				bytes_read--;
 			}
 			info->linecount_flag = 1;
-			remove_comments(*buf);
+			remove_comments(*buffer);
 			add_history_entry(info, *buffer, info->histcount++);
 			/* if (_strchr(*buffer, ';')) Is this a command chain? */
 			{
 				*length = bytes_read;
-				info->cmd_buf = buf;
+				info->cmd_buf = buffer;
 			}
 		}
 	}
@@ -113,14 +113,14 @@ ssize_t read_buffer(info_t *info, char *buf, size_t *length)
 }
 
 /**
- * _getline - Gets the next line of input from STDIN.
+ * shell_getline - Gets the next line of input from STDIN.
  * @info: Parameter struct.
  * @ptr: Address of a pointer to a buffer, preallocated or NULL.
- * @buf_len: Size of preallocated ptr buffer if not NULL.
+ * @buffer_length: Size of preallocated ptr buffer if not NULL.
  *
  * Return: Size.
  */
-int _getline(info_t *info, char **ptr, size_t *buf_len)
+int shell_getline(info_t *info, char **ptr, size_t *buffer_length)
 {
 	static char buf[READ_BUF_SIZE];
 	static size_t buffer_iterator, buffer_len;
@@ -129,8 +129,8 @@ int _getline(info_t *info, char **ptr, size_t *buf_len)
 	char *position = NULL, *new_position = NULL, *c;
 
 	position = *ptr;
-	if (position && buf_len)
-		size = *buf_len;
+	if (position && buffer_length)
+		size = *buffer_length;
 	if (buffer_iterator == buffer_len)
 		buffer_iterator = buffer_len = 0;
 
@@ -153,8 +153,8 @@ int _getline(info_t *info, char **ptr, size_t *buf_len)
 	buffer_iterator = k;
 	position = new_position;
 
-	if (buf_len)
-		*buf_len = size;
+	if (buffer_length)
+		*buffer_length = size;
 	*ptr = position;
 	return (size);
 }

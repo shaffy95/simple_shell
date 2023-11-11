@@ -43,11 +43,13 @@ extern char **environment;
  * @num: the number field
  * @str: a string
  * @next: points to the next node
+ * @alias_string - string alias
  */
 typedef struct liststr
 {
 	int num;
 	char *str;
+	char *alias_string;
 	struct liststr *next;
 } list_t;
 
@@ -117,8 +119,6 @@ int hsh(info_t *, char **);
 int find_builtin(info_t *);
 void find_command(info_t *);
 void fork_command(info_t *);
-
-int loophsh(char **);
 
 /* toem_parse.c */
 int is_command_executable(info_t *, char *);
