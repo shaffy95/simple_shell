@@ -23,7 +23,7 @@ ssize_t input_buffer(info_t *info, char **buffer, size_t *length)
 #if USE_GETLINE
 		bytes_read = getline(buffer, &buffer_length, stdin);
 #else
-		bytes_read = shell_getline(info, buffer, &buffer_length);
+		bytes_read = _getline(info, buffer, &buffer_length);
 #endif
 		if (bytes_read > 0)
 		{
@@ -113,14 +113,14 @@ ssize_t read_buffer(info_t *info, char *buf, size_t *length)
 }
 
 /**
- * shell_getline - Gets the next line of input from STDIN.
+ * _getline - Gets the next line of input from STDIN.
  * @info: Parameter struct.
  * @ptr: Address of a pointer to a buffer, preallocated or NULL.
  * @buffer_length: Size of preallocated ptr buffer if not NULL.
  *
  * Return: Size.
  */
-int shell_getline(info_t *info, char **ptr, size_t *buffer_length)
+int _getline(info_t *info, char **ptr, size_t *buffer_length)
 {
 	static char buf[READ_BUF_SIZE];
 	static size_t buffer_iterator, buffer_len;

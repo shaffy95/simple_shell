@@ -43,13 +43,11 @@ extern char **environment;
  * @num: the number field
  * @str: a string
  * @next: points to the next node
- * @alias_string - string alias
  */
 typedef struct liststr
 {
 	int num;
 	char *str;
-	char *alias_string;
 	struct liststr *next;
 } list_t;
 
@@ -188,7 +186,7 @@ int alias_command(info_t *);
 /*toem_buffer.c */
 ssize_t read_buffer(info_t *, char *, size_t *);
 ssize_t get_input(info_t *);
-int shell_getline(info_t *, char **, size_t *);
+int _getline(info_t *, char **, size_t *);
 void sigintHandler(int);
 
 /* toem_input.c */

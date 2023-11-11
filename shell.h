@@ -125,9 +125,6 @@ int is_command_executable(info_t *, char *);
 char *duplicate_characters(char *, int, int);
 char *find_executable_path(info_t *, char *, char *);
 
-/* loophsh.c */
-int loophsh(char **);
-
 /* toem_shellErrors.c */
 void _eputs(char *);
 int _eputchar(char);
@@ -188,7 +185,7 @@ int alias_command(info_t *);
 /*toem_buffer.c */
 ssize_t read_buffer(info_t *, char *, size_t *);
 ssize_t get_input(info_t *);
-int shell_getline(info_t *, char **, size_t *);
+int _getline(info_t *, char **, size_t *);
 void sigintHandler(int);
 
 /* toem_input.c */
