@@ -1,17 +1,17 @@
 #include "shell.h"
 
 /**
- * input_buffer - Buffers chained commands from input.
+ * input_buf - Buffers chained commands from input.
  * @info: Parameter struct.
  * @buf: Address of the buffer.
  * @length: Address of length variable.
  *
  * Return: Bytes read.
  */
-ssize_t input_buffer(info_t *info, char **buf, size_t *length)
+ssize_t input_buf(info_t *info, char **buf, size_t *length)
 {
 	ssize_t bytes_read = 0;
-	size_t buffer_length = 0;
+	size_t buf_length = 0;
 
 	if (!*length)
 		/* If nothing left in the buffer, fill it */
@@ -21,9 +21,9 @@ ssize_t input_buffer(info_t *info, char **buf, size_t *length)
 		*buf = NULL;
 		signal(SIGINT, sigintHandler);
 #if USE_GETLINE
-		bytes_read = getline(buf, &buffer_length, stdin);
+		bytes_read = getline(buf, &buf_length, stdin);
 #else
-		bytes_read = _getline(info, buf, &buffer_length);
+		bytes_read = _getline(info, buf, &buf_length);
 #endif
 		if (bytes_read > 0)
 		{
@@ -35,7 +35,7 @@ ssize_t input_buffer(info_t *info, char **buf, size_t *length)
 			}
 			info->linecount_flag = 1;
 			remove_comments(*buf);
-			add_history_entry(info, *buffer, info->histcount++);
+			add_history_entry(info, *buf, info->histcount++);
 			/* if (_strchr(*buffer, ';')) Is this a command chain? */
 			{
 				*length = bytes_read;
@@ -54,53 +54,53 @@ ssize_t input_buffer(info_t *info, char **buf, size_t *length)
  */
 ssize_t get_input(info_t *info)
 {
-	static char *chain_buffer;
-	static size_t chain_iterator, current_position, buffer_length;
+	static char *chain_buf;
+	static size_t iterator, current_position, buf_length;
 	ssize_t bytes_read = 0;
-	char **buffer_ptr = &(info->arg), *position;
+	char **buf_ptr = &(info->arg), *position;
 
 	_putchar(BUF_FLUSH);
-	bytes_read = input_buffer(info, &chain_buffer, &buffer_length);
+	bytes_read = input_buf(info, &chain_buf, &buf_length);
 	if (bytes_read == -1)
 		return (-1);
-	if (buffer_length)
+	if (buf_length)
 	{
-		current_position = chain_iterator;
-		position = chain_buffer + chain_iterator;
+		current_position = iterator;
+		position = chain_buf + iterator;
 
-		check_chain(info, chain_buffer, &current_position, chain_iterator,
-				buffer_length);
-		while (current_position < buffer_length)
+		check_chain(info, chain_buf, &current_position, iterator,
+				buf_length);
+		while (current_position < buf_length)
 		{
-			if (chain_delimiter(info, chain_buffer, &current_position))
+			if (chain_delimiter(info, chain_buf, &current_position))
 				break;
 			current_position++;
 		}
 
-		chain_iterator = current_position + 1;
-		if (chain_iterator >= buffer_length)
+		iterator = current_position + 1;
+		if (iterator >= buf_length)
 		{
-			chain_iterator = buffer_length = 0;
+			iterator = buf_length = 0;
 			info->cmd_buf_type = CMD_NORM;
 		}
 
-		*buffer_ptr = position;
+		*buf_ptr = position;
 		return (_strlen(position));
 	}
 
-	*buffer_ptr = chain_buffer;
+	*buf_ptr = chain_buf;
 	return (bytes_read);
 }
 
 /**
- * read_buffer - Reads a buffer.
+ * read_buf - Reads a buffer.
  * @info: Parameter struct.
  * @buf: Buffer.
  * @length: Size.
  *
  * Return: Bytes read.
  */
-ssize_t read_buffer(info_t *info, char *buf, size_t *length)
+ssize_t read_buf(info_t *info, char *buf, size_t *length)
 {
 	ssize_t bytes_read = 0;
 
@@ -123,40 +123,40 @@ ssize_t read_buffer(info_t *info, char *buf, size_t *length)
 int _getline(info_t *info, char **ptr, size_t *buf_len)
 {
 	static char buf[READ_BUF_SIZE];
-	static size_t buffer_iterator, buffer_len;
-	size_t k;
-	ssize_t bytes_read = 0, size = 0;
-	char *position = NULL, *new_position = NULL, *c;
+	static size_t iterator, length;
+	size_t kite;
+	ssize_t read_bytes = 0, seem = 0;
+	char *post = NULL, *new_post = NULL, *court;
 
-	position = *ptr;
-	if (position && buf_len)
-		size = *buf_len;
-	if (buffer_iterator == buffer_len)
-		buffer_iterator = buffer_len = 0;
+	post = *ptr;
+	if (post && buf_len)
+		seem = *buf_len;
+	if (iterator == length)
+		iterator = length = 0;
 
-	bytes_read = read_buffer(info, buf, &buffer_len);
-	if (bytes_read == -1 || (bytes_read == 0 && buffer_len == 0))
+	read_bytes = read_buf(info, buf, &length);
+	if (read_bytes == -1 || (read_bytes == 0 && len == 0))
 		return (-1);
 
-	c = _strchr(buf + buffer_iterator, '\n');
-	k = c ? 1 + (unsigned int)(c - buf) : buffer_len;
-	new_position = _realloc(position, size, size ? size + k : k + 1);
-	if (!new_position) /* MALLOC FAILURE! */
-		return (position ? free(position), -1 : -1);
+	court = _strchr(buf + iterator, '\n');
+	kite = court ? 1 + (unsigned int)(court - buf) : length;
+	new_post = _realloc(post, seem, seem ? seem + kite : kite + 1);
+	if (!new_post) /* MALLOC FAILURE! */
+		return (post ? free(post), -1 : -1);
 
-	if (size)
-		_strncat(new_position, buf + buffer_iterator, k - buffer_iterator);
+	if (seem)
+		_strncat(new_post, buf + iterator, kite - iterator);
 	else
-		_strncpy(new_position, buf + buffer_iterator, k - buffer_iterator + 1);
+		_strncpy(new_post, buf + iterator, kite - iterator + 1);
 
-	size += k - buffer_iterator;
-	buffer_iterator = k;
-	position = new_position;
+	seem += kite - iterator;
+	iterator = kite;
+	post = new_post;
 
 	if (buf_len)
-		*buf_len = size;
-	*ptr = position;
-	return (size);
+		*buf_len = seem;
+	*ptr = post;
+	return (seem);
 }
 
 /**
