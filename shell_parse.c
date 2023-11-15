@@ -34,12 +34,12 @@ int is_command_executable(info_t *info, char *file_path)
 char *duplicate_characters(char *path_string, int start_index, int stop_index)
 {
 	static char buffer[1024];
-	int index = 0, g = 0;
+	int index = 0, grad = 0;
 
-	for (g = 0, index = start_index; index < stop_index; index++)
+	for (grad = 0, index = start_index; index < stop_index; index++)
 		if (path_string[index] != ':')
-			buffer[g++] = path_string[index];
-	buffer[g] = 0;
+			buffer[grad++] = path_string[index];
+	buffer[grad] = 0;
 	return (buffer);
 }
 
