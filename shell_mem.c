@@ -2,16 +2,16 @@
 
 /**
  * free_and_null_pointer - Frees a pointer and sets it to NULL
- * @ptr: address of the pointer to free
+ * @pointer: address of the pointer to free
  *
  * Return: 1 if the pointer was freed, otherwise 0.
  */
-int free_and_null_pointer(void **ptr)
+int free_and_null_pointer(void **pointer)
 {
-	if (ptr && *ptr)
+	if (pointer && *pointer)
 	{
-		free(*ptr);
-		*ptr = NULL;
+		free(*pointer);
+		*pointer = NULL;
 		return (1);
 	}
 	return (0);

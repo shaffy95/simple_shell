@@ -56,31 +56,32 @@ int erratoi(char *strToConvert)
  */
 char *convert_number(long int num, int base, int flags)
 {
-	static char *array;
+	static char *buffer_array;
 	static char buffer[50];
-	char sign = 0;
-	char *ptr;
+	char buffer_sign = 0;
+	char *pointer;
 	unsigned long nay = num;
 
 	if (!(flags & CONVERT_UNSIGNED) && num < 0)
 	{
 		nay = -num;
-		sign = '-';
+		buffer_sign = '-';
 	}
 
-	array = flags & CONVERT_LOWERCASE ? "0123456789abcdef" : "0123456789ABCDEF";
-	ptr = &buffer[49];
-	*ptr = '\0';
+	buffer_array = flags & CONVERT_LOWERCASE ? "0123456789abcdef" :
+		"0123456789ABCDEF";
+	pointer = &buffer[49];
+	*pointer = '\0';
 
 	do {
-		*--ptr = array[nay % base];
+		*--pointer = buffer_array[nay % base];
 		nay /= base;
 	} while (nay != 0);
 
-	if (sign)
-		*--ptr = sign;
+	if (buffer_sign)
+		*--pointer = buffer_sign;
 
-	return (ptr);
+	return (pointer);
 }
 
 /**
@@ -93,32 +94,32 @@ int print_d(int integer_to_print, int fd)
 {
 	int (*__putchar)(char) = _putchar;
 	int my, count = 0;
-	unsigned int _abs_, current;
+	unsigned int buf_abs, c;
 
 	if (fd == STDERR_FILENO)
 		__putchar = _eputchar;
 
 	if (integer_to_print < 0)
 	{
-		_abs_ = -integer_to_print;
+		buf_abs = -integer_to_print;
 		__putchar('-');
 		count++;
 	}
 	else
-		_abs_ = integer_to_print;
+		buf_abs = integer_to_print;
 
-	current = _abs_;
+	c = buf_abs;
 	for (my = 1000000000; my > 1; my /= 10)
 	{
-		if (_abs_ / my)
+		if (buf_abs / my)
 		{
-			__putchar('0' + current / my);
+			__putchar('0' + c / my);
 			count++;
 		}
-		current %= my;
+		c %= my;
 	}
 
-	__putchar('0' + current);
+	__putchar('0' + c);
 	count++;
 
 	return (count);

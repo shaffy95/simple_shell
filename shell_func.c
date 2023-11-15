@@ -98,6 +98,6 @@ int showHelp(info_t *shellInfo)
 	argArray = shellInfo->argv;
 	_puts("Help: Function not yet implemented\n");
 	if (0)
-		_puts(*argArray); /* Temporary unused variable workaround */
+		_puts(*argArray);
 	return (0);
 }

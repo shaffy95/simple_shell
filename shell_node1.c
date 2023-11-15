@@ -88,12 +88,12 @@ size_t print_linked_list(const list_t *first_node)
  */
 list_t *find_pnode(list_t *node, char *prefix, char next_char)
 {
-	char *m = NULL;
+	char *maze = NULL;
 
 	while (node)
 	{
-		m = starts_with(node->str, prefix);
-		if (m && ((next_char == -1) || (*m == next_char)))
+		maze = starts_with(node->str, prefix);
+		if (maze && ((next_char == -1) || (*maze == next_char)))
 			return (node);
 		node = node->next;
 	}
