@@ -16,18 +16,18 @@ int display_history(info_t *info)
 /**
  * unset_alias - Removes an alias.
  * @info: A pointer to the info_t structure.
- * @alias_string: The alias string to be removed.
+ * @str: The alias string to be removed.
  *
  * This function removes an alias from the info structure.
  * Return: 0 on success, 1 on failure.
  */
-int unset_alias(info_t *info, char *alias_string)
+int unset_alias(info_t *info, char *str)
 {
 	char *equal_sign_position;
 	char original_character;
 	int result;
 
-	equal_sign_position = _strncpy(alias_string, "=", 1024);
+	equal_sign_position = _strncpy(str, "=", 1024);
 	if (!equal_sign_position)
 		return (1);
 
@@ -36,7 +36,7 @@ int unset_alias(info_t *info, char *alias_string)
 
 	result = remove_si_node(&(info->alias),
 			get_inode(info->alias,
-				find_pnode(info->alias, alias_string, -1)));
+				find_pnode(info->alias, str, -1)));
 
 	*equal_sign_position = original_character;
 
@@ -46,24 +46,24 @@ int unset_alias(info_t *info, char *alias_string)
 /**
  * set_alias - Sets an alias in the info structure.
  * @info: A pointer to the info_t structure.
- * @alias_string: The alias string to be set.
+ * @str: The alias string to be set.
  *
  * This function sets an alias in the info structure.
  * Return: 0 on success, 1 on failure.
  */
-int set_alias(info_t *info, char *alias_string)
+int set_alias(info_t *info, char *str)
 {
 	char *equal_sign_position;
 
-	equal_sign_position = _strncpy(alias_string, "=", 1024);
+	equal_sign_position = _strncpy(str, "=", 1024);
 	if (!equal_sign_position)
 		return (1);
 
 	if (!*++equal_sign_position)
-		return (unset_alias(info, alias_string));
+		return (unset_alias(info, str));
 
-	unset_alias(info, alias_string);
-	return (insert_enode(&(info->alias), alias_string, 0) == NULL);
+	unset_alias(info, str);
+	return (insert_enode(&(info->alias), str, 0) == NULL);
 }
 
 
@@ -78,8 +78,8 @@ int print_alias(list_t *alias_node)
 
 	if (alias_node)
 	{
-		equal_sign_position = _strncpy(alias_node->alias_string, "=", 1024);
-		for (alias = alias_node->alias_string; alias <= equal_sign_position; alias++)
+		equal_sign_position = _strncpy(alias_node->str, "=", 1024);
+		for (alias = alias_node->str; alias <= equal_sign_position; alias++)
 			_putchar(*alias);
 		_putchar('\'');
 		_puts(equal_sign_position + 1);
