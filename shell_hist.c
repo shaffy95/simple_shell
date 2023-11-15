@@ -8,7 +8,7 @@
  */
 int read_history(info_t *info)
 {
-	int index, b_last = 0, lineCt = 0;
+	int index, last = 0, lineCt = 0;
 	ssize_t fd, read_length, file_size = 0;
 	struct stat st;
 	char *buffer = NULL, *file_name = get_history_file(info);
@@ -36,11 +36,11 @@ int read_history(info_t *info)
 		if (buffer[index] == '\n')
 		{
 			buffer[index] = 0;
-			add_history_entry(info, buffer + b_last, lineCt++);
-			b_last = index + 1;
+			add_history_entry(info, buffer + last, lineCt++);
+			last = index + 1;
 		}
-	if (b_last != index)
-		add_history_entry(info, buffer + b_last, lineCt++);
+	if (last != index)
+		add_history_entry(info, buffer + last, lineCt++);
 	free(buffer);
 	info->histcount = lineCt;
 	while (info->histcount-- >= HIST_MAX)
